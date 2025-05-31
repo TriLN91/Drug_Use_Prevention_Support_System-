@@ -1,0 +1,125 @@
+{
+  "Users": [
+    {
+      "id": "1",
+      "username": "1",
+      "password": "1",
+      "email": "admin@fptdaigaku.org",
+      "full_name": "Admin User",
+      "phonenumber": "08989",
+      "address": "123 Main St",
+      "date_of_birth": "2000-01-01",
+      "gender": "M",
+      "role_id": 1
+    },
+    {
+      "id": "2",
+      "username": "user1",
+      "password": "password1",
+      "email": "user1@gmail.com",
+      "full_name": "Nguyen Van A",
+      "phonenumber": 987654321,
+      "address": "456 Second St",
+      "date_of_birth": "2000-05-15",
+      "gender": "M",
+      "role_id": 2
+    },
+    {
+      "id": "3",
+      "username": "user2",
+      "password": "password2",
+      "email": "user2@gmail.com",
+      "full_name": "Tran Thi B",
+      "phonenumber": 1122334455,
+      "address": "789 Third St",
+      "date_of_birth": "1998-08-20",
+      "gender": "F",
+      "role_id": 2
+    },
+    {
+      "id": "4",
+      "username": "volunteer1",
+      "password": "vol123",
+      "email": "volunteer1@wehope.org",
+      "full_name": "Le Van C",
+      "phonenumber": 9988776655,
+      "address": "101 Volunteer Ave",
+      "date_of_birth": "1995-12-12",
+      "gender": "M",
+      "role_id": 3
+    },
+    {
+      "id": "7654",
+      "full_name": "Trinh Tran Phuong Tuan",
+      "username": "jack",
+      "email": "khoivtse184567@fpt.edu.vn",
+      "phonenumber": "0898944760",
+      "address": "Ben Tre",
+      "date_of_birth": "1997-04-20",
+      "gender": "M",
+      "password": "jack5m",
+      "role_id": 2
+    }
+  ],
+  "Roles": [
+    {
+      "id": "1",
+      "name": "Admin"
+    },
+    {
+      "id": "2",
+      "name": "User"
+    },
+    {
+      "id": "3",
+      "name": "Volunteer"
+    }
+  ],
+  "Courses": [
+    {
+      "id": "1",
+      "name": "The Truth About Drugs",
+      "description": "Learn the real facts about drugs, their effects, and how to make informed choices.",
+      "start_date": "2024-06-01",
+      "end_date": "2024-07-01",
+      "target_age_group": "Teenagers, Adults",
+      "type": "Online"
+    },
+    {
+      "id": "2",
+      "name": "Say No To Drugs",
+      "description": "A course designed to empower youth to resist peer pressure and avoid drugs.",
+      "start_date": "2024-07-10",
+      "end_date": "2024-08-10",
+      "target_age_group": "Teenagers",
+      "type": "Workshop"
+    },
+    {
+      "id": "3",
+      "name": "Drug Prevention for Parents",
+      "description": "Equip parents with knowledge and tools to protect their children from substance abuse.",
+      "start_date": "2024-08-15",
+      "end_date": "2024-09-15",
+      "target_age_group": "Parents",
+      "type": "Seminar"
+    },
+    {
+      "id": "4",
+      "name": "Community Awareness Program",
+      "description": "Raise awareness in the community about the dangers of drug abuse and available support.",
+      "start_date": "2024-09-20",
+      "end_date": "2024-10-20",
+      "target_age_group": "All Ages",
+      "type": "Community"
+    },
+    {
+      "id": "5",
+      "name": "Community Drug Awareness",
+      "description": "Raise awareness in the community about the dangers of drug abuse and available support.",
+      "start_date": "2024-09-20",
+      "end_date": "2024-10-20",
+      "target_age_group": "All Ages",
+      "type": "Community"
+    }
+  ]
+}
