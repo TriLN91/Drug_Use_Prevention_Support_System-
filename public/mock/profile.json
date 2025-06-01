@@ -1,0 +1,9 @@
+{
+  "username":"demoUser",
+  "email":"demo@mail.com",
+  "full_name":"Demo User",
+  "phonenumber":"0987654321",
+  "address":"Ha Noi",
+  "date_of_birth":"1995-05-15",
+  "gender":"F"
+}
