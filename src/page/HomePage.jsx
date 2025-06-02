@@ -40,7 +40,7 @@ function HomePage() {
         {/* Say No To Drugs */}
         <div className="bg-white rounded-lg shadow p-4 w-[350px] flex flex-col items-center">
           <img
-            src="https://cdn.pixabay.com/photo/2017/01/31/13/14/drugs-2026044_1280.png"
+            src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748867410/say-no-to-drugs-poster-34182318_l6ily8.webp"
             alt="Say No To Drugs"
             className="w-full h-48 object-cover rounded mb-2"
           />

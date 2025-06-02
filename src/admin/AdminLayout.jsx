@@ -9,7 +9,7 @@ export default function AdminLayout() {
     { label: "Dashboard", path: "/admin" },
     { label: "Quản lý tài khoản", path: "/admin/users" },
     { label: "Quản lý khóa học", path: "/admin/courses" },
-    // Thêm các mục khác nếu muốn...
+
   ];
 
   return (
@@ -22,11 +22,10 @@ export default function AdminLayout() {
             <li key={item.path}>
               <Link
                 to={item.path}
-                className={`block px-4 py-2 rounded transition ${
-                  location.pathname === item.path
-                    ? "bg-blue-700 font-semibold"
-                    : "hover:bg-blue-800"
-                }`}
+                className={`block px-4 py-2 rounded transition ${location.pathname === item.path
+                  ? "bg-blue-700 font-semibold"
+                  : "hover:bg-blue-800"
+                  }`}
               >
                 {item.label}
               </Link>
@@ -38,9 +37,11 @@ export default function AdminLayout() {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between bg-white shadow px-8 py-4">
-          <span className="font-semibold text-lg text-gray-700">Xin chào, Admin!</span>
+          <span className="font-semibold text-lg text-gray-700">
+            Hello, {localStorage.getItem('full_name')}!
+          </span>
           <button
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-semibold"
+            className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded font-semibold transition"
             onClick={() => {
               localStorage.removeItem("user");
               window.location.href = "/login";
