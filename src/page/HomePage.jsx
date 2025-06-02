@@ -15,7 +15,7 @@ function HomePage() {
       {/* Hero Section */}
       <section className="relative w-full h-[340px] flex items-center justify-center bg-gray-100">
         <img
-          src="https://cdn.discordapp.com/attachments/1203731339766141021/1377460676087382147/yddl2bbU4YC9QAAAABJRU5ErkJggg.png?ex=68390bb9&is=6837ba39&hm=1a25ad2069696d118282d9925d27b0bf4a372be1fa27d96d6ea69ed2e3839659&"
+          src="https://res.cloudinary.com/dq3akwrvo/image/upload/v1748825351/download_1_czgnvf.png"
           alt="Hero"
           className="absolute inset-0 w-full h-full object-cover"
         />

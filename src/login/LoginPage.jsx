@@ -17,10 +17,15 @@ function LoginPage() {
             const found = users.find(
                 (u) => u.username === username && u.password === password
             );
-            if (found) {
-                localStorage.setItem('full_name', found.full_name);
-                localStorage.setItem('id', found.id); // Lấy từ dữ liệu trả về
-                navigate('/');
+             if (found) {
+                // Lưu user vào localStorage
+                localStorage.setItem('user', JSON.stringify(found));
+                // Kiểm tra role
+                if (found.role_id === 1 || found.role === 'Admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/');
+                }
             } else {
                 setError('Invalid username or password');
             }
@@ -35,7 +40,7 @@ function LoginPage() {
             <div className="flex-1 flex flex-col items-center justify-center">
                 {/* Logo */}
                 <img
-                    src="https://cdn.discordapp.com/attachments/1203731339766141021/1376560938315940014/image.png?ex=68366e86&is=68351d06&hm=f892db442c80597c8eb2da733f202a874e2152b73bb2e7f57326bb7ba3579200&"
+                    src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
                     alt="WeHope Logo"
                     className="w-52 mb-2"
                 />

@@ -25,8 +25,8 @@ function Header() {
     <header className="flex items-center justify-between px-12 py-4 shadow-sm">
       <div className="flex items-center gap-2">
        <a href='/'> <img
-          src="https://cdn.discordapp.com/attachments/1203731339766141021/1376560938315940014/image.png?ex=68366e86&is=68351d06&hm=f892db442c80597c8eb2da733f202a874e2152b73bb2e7f57326bb7ba3579200&"
-          alt="WeHope Logo"
+          src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
+          alt="Logo"
           className="w-20"
         /></a>
       </div>
