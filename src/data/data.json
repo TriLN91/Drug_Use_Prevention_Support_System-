@@ -68,11 +68,23 @@
     },
     {
       "id": "2",
-      "name": "User"
+      "name": "Member"
     },
     {
       "id": "3",
-      "name": "Volunteer"
+      "name": "Staff"
+    },
+    {
+      "id": "4",
+      "name": "Consultant"
+    },
+    {
+      "id": "5",
+      "name": "Manager"
+    },
+    {
+      "id": "6",
+      "name": "Guest"
     }
   ],
   "Courses": [
@@ -148,7 +160,7 @@
       ],
       "correct": 1
     },
-      {
+    {
       "id": 2,
       "course_id": 1,
       "question": "What is the main effect of drugs on the brain?",
