@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 
 function CouresListPage() {
@@ -67,9 +68,14 @@ function CouresListPage() {
                                     <span><b>Start:</b> {course.start_date}</span>
                                     <span><b>End:</b> {course.end_date}</span>
                                 </div>
-                                <a href='/course'><button className="border border-blue-700 text-blue-700 px-6 py-2 rounded font-semibold hover:bg-blue-50 transition w-fit">
-                                    Start This Free Course
-                                </button></a>
+                                <Link
+                                    to={`/course/${course.id}`}
+                                    className="w-fit"
+                                >
+                                    <button className="border border-blue-700 text-blue-700 px-6 py-2 rounded font-semibold hover:bg-blue-50 transition w-fit">
+                                        Start This Free Course
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     ))}
@@ -96,4 +102,4 @@ function CouresListPage() {
     )
 }
 
-export default CouresListPage;
+export default CouresListPage

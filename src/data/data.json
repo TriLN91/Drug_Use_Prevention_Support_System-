@@ -83,7 +83,8 @@
       "start_date": "2024-06-01",
       "end_date": "2024-07-01",
       "target_age_group": "Teenagers, Adults",
-      "type": "Online"
+      "type": "Online",
+      "video_link": "https://www.youtube.com/watch?v=pwy3_wFMATU"
     },
     {
       "id": "2",
@@ -120,6 +121,44 @@
       "end_date": "2024-10-20",
       "target_age_group": "All Ages",
       "type": "Community"
+    }
+  ],
+  "CourseQuiz": [
+    {
+      "id": 1,
+      "course_id": 1,
+      "question": "The word culture means:",
+      "answer": [
+        "A part of society that is above the common working class",
+        "The beliefs and activities that are common to members of a group",
+        "An education in a university or college that extends over many years and results in extensive knowledge of a subject",
+        "A chemical formula used to make drugs"
+      ],
+      "correct": 1
+    },
+    {
+      "id": 2,
+      "course_id": 1,
+      "question": "What is the main effect of drugs on the brain?",
+      "answer": [
+        "They improve memory",
+        "They disrupt normal brain function",
+        "They make you smarter",
+        "They have no effect"
+      ],
+      "correct": 1
+    },
+      {
+      "id": 2,
+      "course_id": 1,
+      "question": "What is the main effect of drugs on the brain?",
+      "answer": [
+        "They improve memory",
+        "They disrupt normal brain function",
+        "They make you smarter",
+        "They have no effect"
+      ],
+      "correct": 1
     }
   ]
 }

@@ -5,7 +5,9 @@ import LoginPage from './page/LoginPage'
 import RegisterPage from './page/registerPage'
 import CouresListPage from './page/CouresListPage'
 import UserProfilePage from './page/UserProfilePage'
-import Course from './page/Course'
+import Servey from './page/Servey'
+import CourseVideo from './page/CourseVideo'
+import CourseQuiz from './page/CourseQuiz'
 
 function App() {
   return (
@@ -16,7 +18,10 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/courseList" element={<CouresListPage />} />
         <Route path="/userProfile" element={<UserProfilePage />} />
-        <Route path="/course" element={<Course />} />
+        <Route path="/course" element={<CourseVideo />} />
+        <Route path="/servey" element={<Servey />} />
+        <Route path="/quiz" element={<CourseQuiz />} />
+        
       </Routes>
     </BrowserRouter>
   )
