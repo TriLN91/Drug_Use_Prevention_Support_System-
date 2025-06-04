@@ -1,8 +1,8 @@
 package com.example.druguseprevention.api;
 
+import com.example.druguseprevention.entity.User;
 import com.example.druguseprevention.dto.LoginRequest;
 import com.example.druguseprevention.dto.RegisterRequest;
-import com.example.druguseprevention.entity.User;
 import com.example.druguseprevention.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
