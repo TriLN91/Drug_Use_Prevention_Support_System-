@@ -1,7 +1,7 @@
-package com.example.druguseprvention.entity;
+package com.example.druguseprevention.entity;
 
-import com.example.druguseprvention.enums.Gender;
-import com.example.druguseprvention.enums.Role;
+import com.example.druguseprevention.enums.Gender;
+import com.example.druguseprevention.enums.Role;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.*;

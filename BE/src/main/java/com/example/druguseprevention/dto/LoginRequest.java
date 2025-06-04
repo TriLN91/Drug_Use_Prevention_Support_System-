@@ -1,4 +1,4 @@
-package com.example.druguseprvention.dto;
+package com.example.druguseprevention.dto;
 
 import lombok.Data;
 

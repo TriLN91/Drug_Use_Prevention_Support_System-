@@ -1,4 +1,4 @@
-package com.example.druguseprvention.exception;
+package com.example.druguseprevention.exception;
 
 public class AuthenticationException extends RuntimeException {
     public AuthenticationException (String message){

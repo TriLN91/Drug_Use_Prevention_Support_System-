@@ -1,6 +1,6 @@
-package com.example.druguseprvention.config;
+package com.example.druguseprevention.config;
 
-import com.example.druguseprvention.service.AuthenticationService;
+import com.example.druguseprevention.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
