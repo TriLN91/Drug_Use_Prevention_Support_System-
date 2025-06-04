@@ -1,73 +1,84 @@
 package com.example.druguseprevention.entity;
 
 import com.example.druguseprevention.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.example.druguseprevention.enums.Role;
 import jakarta.persistence.*;
-
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
-
 @Entity
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 4, max = 20, message = "Username must be between 4 and 20 characters")
-    @Column(nullable = false, unique = true)
-    String username;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    @Column(unique = true, nullable = false)
+    private String email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password must be at least 6 characters")
     @Column(nullable = false)
-    String password;
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    @Column(nullable = false, unique = true)
-    String email;
-
-    @NotBlank(message = "Full name is required")
-    @Size(max = 100)
-    String fullName;
-
-    @Pattern(regexp = "^(0[3|5|7|8|9])[0-9]{8}$", message = "Phone number not valid!")
-    String phoneNumber;
-
-    @Size(max = 100, message = "Address must be less than 100 characters")
-    String address;
-
-    @Past(message = "Date of birth must be in the past")
-    LocalDate dateOfBirth;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    Gender gender;
+    @Column(length = 20)
+    private Role role;
 
-    @Enumerated(EnumType.STRING)
-    Role role;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "fullName", column = @Column(name = "full_name")),
+            @AttributeOverride(name = "dob", column = @Column(name = "dob")),
+            @AttributeOverride(name = "gender", column = @Column(name = "gender")),
+            @AttributeOverride(name = "address", column = @Column(name = "address")),
+            @AttributeOverride(name = "phone", column = @Column(name = "phone")),
+            @AttributeOverride(name = "avatarUrl", column = @Column(name = "avatar_url"))
+    })
+    private Profile profile;
 
+    // === Spring Security ===
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return null; // nếu có phân quyền chi tiết, return danh sách roles ở đây
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return email;
     }
 
     @Override
-    public String getPassword() {
-        return this.password;
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setRole(com.example.druguseprevention.enums.Role role) {
     }
 }
