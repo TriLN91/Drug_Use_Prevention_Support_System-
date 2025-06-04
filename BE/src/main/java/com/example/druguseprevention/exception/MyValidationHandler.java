@@ -1,4 +1,4 @@
-package com.example.druguseprvention.exception;
+package com.example.druguseprevention.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

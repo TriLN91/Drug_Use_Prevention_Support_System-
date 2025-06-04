@@ -1,4 +1,4 @@
-package com.example.druguseprvention.enums;
+package com.example.druguseprevention.enums;
 
 public enum Role {
     ADMIN,

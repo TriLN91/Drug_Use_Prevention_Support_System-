@@ -1,11 +1,11 @@
-package com.example.druguseprvention.service;
+package com.example.druguseprevention.service;
 
-import com.example.druguseprvention.dto.LoginRequest;
-import com.example.druguseprvention.dto.RegisterRequest;
-import com.example.druguseprvention.entity.User;
-import com.example.druguseprvention.enums.Role;
-import com.example.druguseprvention.exception.AuthenticationException;
-import com.example.druguseprvention.repository.AuthenticationRepository;
+import com.example.druguseprevention.dto.LoginRequest;
+import com.example.druguseprevention.dto.RegisterRequest;
+import com.example.druguseprevention.entity.User;
+import com.example.druguseprevention.enums.Role;
+import com.example.druguseprevention.exception.AuthenticationException;
+import com.example.druguseprevention.repository.AuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,6 +1,6 @@
-package com.example.druguseprvention.repository;
+package com.example.druguseprevention.repository;
 
-import com.example.druguseprvention.entity.User;
+import com.example.druguseprevention.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AuthenticationRepository extends JpaRepository<User, Long> {

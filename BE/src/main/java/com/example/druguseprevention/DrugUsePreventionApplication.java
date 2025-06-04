@@ -1,13 +1,13 @@
-package com.example.druguseprvention;
+package com.example.druguseprevention;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DugUsePreventationApplication {
+public class DrugUsePreventionApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DugUsePreventationApplication.class, args);
+		SpringApplication.run(DrugUsePreventionApplication.class, args);
 	}
 
 }

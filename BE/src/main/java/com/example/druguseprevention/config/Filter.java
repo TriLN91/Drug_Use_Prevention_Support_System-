@@ -1,4 +1,4 @@
-package com.example.druguseprvention.config;
+package com.example.druguseprevention.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

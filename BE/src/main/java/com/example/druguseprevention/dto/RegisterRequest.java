@@ -1,6 +1,6 @@
-package com.example.druguseprvention.dto;
+package com.example.druguseprevention.dto;
 
-import com.example.druguseprvention.enums.Gender;
+import com.example.druguseprevention.enums.Gender;
 import lombok.Data;
 
 import java.time.LocalDate;
