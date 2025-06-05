@@ -40,6 +40,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="users" element={<UserManage />} />
           <Route path="courses" element={<CourseManage />} />
+          <Route path="/admin/profile" element={<UserProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
