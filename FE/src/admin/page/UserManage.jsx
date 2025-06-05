@@ -16,6 +16,7 @@ export default function UserManage() {
     date_of_birth: "",
     gender: "M",
     role_id: "",
+    password: ""
   });
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -41,43 +42,69 @@ export default function UserManage() {
     );
 
   const handleSave = () => {
-    setUsers(users.map(u => u.id === selectedUser.id ? selectedUser : u));
-    setSelectedUser(null);
-    toast.success("Edit user successfully!");
+    fetch(`http://localhost:5000/Users/${selectedUser.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(selectedUser)
+    })
+      .then(res => {
+        if (res.ok) {
+          setUsers(users.map(u => u.id === selectedUser.id ? selectedUser : u));
+          setSelectedUser(null);
+          toast.success("Edit user successfully!");
+        } else {
+          toast.error("Edit failed!");
+        }
+      });
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this account?")) {
-      setUsers(users.filter(u => u.id !== id));
-      toast.success("Delete user successfully!");
+      fetch(`http://localhost:5000/Users/${id}`, {
+        method: "DELETE"
+      })
+        .then(res => {
+          if (res.ok) {
+            setUsers(users.filter(u => u.id !== id));
+            toast.success("Delete user successfully!");
+          } else {
+            toast.error("Delete failed!");
+          }
+        });
     }
   };
 
   // Tạo user mới
   const handleCreate = () => {
-    if (!newUser.full_name || !newUser.username || !newUser.role_id) {
-      toast.error("Full name, username và role là bắt buộc!");
+    if (!newUser.full_name || !newUser.username || !newUser.role_id || !newUser.password) {
+      toast.error("Full name, username, password and role are required!");
       return;
     }
-    setUsers([
-      ...users,
-      {
+    fetch("http://localhost:5000/Users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         ...newUser,
         id: (Math.max(0, ...users.map(u => +u.id || 0)) + 1).toString(),
-      }
-    ]);
-    setShowCreate(false);
-    setNewUser({
-      full_name: "",
-      username: "",
-      email: "",
-      phonenumber: "",
-      address: "",
-      date_of_birth: "",
-      gender: "M",
-      role_id: "",
-    });
-    toast.success("User created successfully!");
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        setUsers([...users, data]);
+        setShowCreate(false);
+        setNewUser({
+          full_name: "",
+          username: "",
+          email: "",
+          phonenumber: "",
+          address: "",
+          date_of_birth: "",
+          gender: "M",
+          role_id: "",
+          password: ""
+        });
+        toast.success("User created successfully!");
+      });
   };
 
   return (
@@ -378,6 +405,17 @@ export default function UserManage() {
                     <option key={id} value={id}>{name}</option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <b>Password:</b>
+                <input
+                  type="password"
+                  className="border rounded px-2 py-1 w-full"
+                  value={newUser.password}
+                  onChange={e =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
+                />
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-6">

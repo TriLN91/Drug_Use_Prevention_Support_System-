@@ -49,52 +49,94 @@ export default function CourseManage() {
   };
 
   const handleSave = () => {
-    setCourses(courses.map(c => c.id === selectedCourse.id ? selectedCourse : c));
-    setSelectedCourse(null);
-    toast.success("Edit course successfully!");
+    fetch(`http://localhost:5000/Courses/${selectedCourse.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(selectedCourse)
+    })
+      .then(res => {
+        if (res.ok) {
+          setCourses(courses.map(c => c.id === selectedCourse.id ? selectedCourse : c));
+          setSelectedCourse(null);
+          toast.success("Edit course successfully!");
+        } else {
+          toast.error("Edit failed!");
+        }
+      });
   };
 
   // Tạo mới khóa học
   const handleCreate = () => {
     if (!newCourse.name || !newCourse.type || !newCourse.target_age_group) {
-      toast.error("Course name, type và target age group là bắt buộc!");
+      toast.error("Course name, type and target age group are required!");
       return;
     }
-    setCourses([
-      ...courses,
-      {
-        ...newCourse,
-        id: (Math.max(0, ...courses.map(c => +c.id || 0)) + 1).toString(),
-        status: "pending"
-      }
-    ]);
-    setShowCreate(false);
-    setNewCourse({
-      name: "",
-      description: "",
-      start_date: "",
-      end_date: "",
-      type: "",
-      target_age_group: "",
-      video_link: "",
+    const newCourseData = {
+      ...newCourse,
+      id: (Math.max(0, ...courses.map(c => +c.id || 0)) + 1).toString(),
       status: "pending"
-    });
-    toast.success("Course created and waiting for approval!");
+    };
+    fetch("http://localhost:5000/Courses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCourseData)
+    })
+      .then(res => res.json())
+      .then(data => {
+        setCourses([...courses, data]);
+        setShowCreate(false);
+        setNewCourse({
+          name: "",
+          description: "",
+          start_date: "",
+          end_date: "",
+          type: "",
+          target_age_group: "",
+          video_link: "",
+          status: "pending"
+        });
+        toast.success("Course created and waiting for approval!");
+      });
   };
 
   // Duyệt hoặc từ chối khóa học
   const handleApproveCourse = (id) => {
-    setCourses(courses.map(c =>
-      c.id === id ? { ...c, status: "approved" } : c
-    ));
-    toast.success("Course approved!");
+    const course = courses.find(c => c.id === id);
+    if (!course) return;
+    const updated = { ...course, status: "approved" };
+    fetch(`http://localhost:5000/Courses/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated)
+    })
+      .then(res => {
+        if (res.ok) {
+          setCourses(courses.map(c => c.id === id ? updated : c));
+          toast.success("Course approved!");
+        } else {
+          toast.error("Approve failed!");
+        }
+      });
   };
 
+  // TỪ CHỐI KHÓA HỌC
   const handleRejectCourse = (id) => {
-    setCourses(courses.map(c =>
-      c.id === id ? { ...c, status: "rejected" } : c
-    ));
-    toast.success("Course rejected!");
+    const course = courses.find(c => c.id === id);
+    if (!course) return;
+    const updated = { ...course, status: "rejected" };
+    fetch(`http://localhost:5000/Courses/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated)
+    })
+      .then(res => {
+        if (res.ok) {
+          setCourses(courses.map(c => c.id === id ? updated : c));
+          toast.success("Course rejected!");
+        } else {
+          toast.error("Reject failed!");
+        }
+      });
   };
 
   // Reset filter function
