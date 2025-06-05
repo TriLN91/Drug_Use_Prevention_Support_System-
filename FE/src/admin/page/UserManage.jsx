@@ -17,6 +17,7 @@ export default function UserManage() {
     gender: "M",
     role_id: "",
   });
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetch("/src/data/data.json")
@@ -31,10 +32,13 @@ export default function UserManage() {
       });
   }, []);
 
-  // Filter users by role
-  const filteredUsers = selectedRole
-    ? users.filter(u => String(u.role_id) === selectedRole)
-    : users;
+  // Filter users by role và search term
+  const filteredUsers = users
+    .filter(u => !selectedRole || String(u.role_id) === selectedRole)
+    .filter(u =>
+      u.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   const handleSave = () => {
     setUsers(users.map(u => u.id === selectedUser.id ? selectedUser : u));
@@ -85,19 +89,39 @@ export default function UserManage() {
       >
         Create User
       </button>
-      {/* Role filter dropdown */}
-      <div className="mb-4">
-        <label className="mr-2 font-semibold">Filter by role:</label>
-        <select
-          className="border rounded px-2 py-1"
-          value={selectedRole}
-          onChange={e => setSelectedRole(e.target.value)}
-        >
-          <option value="">All</option>
-          {Object.entries(roles).map(([id, name]) => (
-            <option key={id} value={id}>{name}</option>
-          ))}
-        </select>
+      {/* Search input và filter by role cùng hàng */}
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2">
+          <label className="mr-2 font-semibold">Filter by role:</label>
+          <select
+            className="border rounded px-2 py-1"
+            value={selectedRole}
+            onChange={e => setSelectedRole(e.target.value)}
+          >
+            <option value="">All</option>
+            {Object.entries(roles).map(([id, name]) => (
+              <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            className="border rounded px-2 py-1"
+            placeholder="Search by name or username"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+          />
+          {searchTerm && (
+            <button
+              className="text-gray-500 hover:text-red-500 text-xl font-bold px-2"
+              onClick={() => setSearchTerm("")}
+              title="Clear search"
+            >
+              ×
+            </button>
+          )}
+        </div>
       </div>
       <div className="overflow-x-auto bg-white rounded-lg shadow">
         <table className="min-w-full divide-y divide-gray-200">
