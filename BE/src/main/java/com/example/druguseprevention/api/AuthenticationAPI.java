@@ -1,9 +1,11 @@
 package com.example.druguseprevention.api;
 
-import com.example.druguseprevention.entity.User;
 import com.example.druguseprevention.dto.LoginRequest;
 import com.example.druguseprevention.dto.RegisterRequest;
+import com.example.druguseprevention.dto.UserResponse;
+import com.example.druguseprevention.entity.User;
 import com.example.druguseprevention.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @CrossOrigin("*")// cho phép tất cả truy cập
@@ -27,7 +30,7 @@ public class AuthenticationAPI {
 
     @PostMapping("/api/login")
     public ResponseEntity login (@RequestBody LoginRequest loginRequest){
-        User user = authenticationService.login(loginRequest);
-        return ResponseEntity.ok(user);
+        UserResponse userResponse = authenticationService.login(loginRequest);
+        return ResponseEntity.ok(userResponse);
     }
 }
