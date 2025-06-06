@@ -9,14 +9,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@CrossOrigin("*")// cho phép tất cả truy cập
+@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/api")
 public class AuthenticationAPI {
 
     @Autowired
