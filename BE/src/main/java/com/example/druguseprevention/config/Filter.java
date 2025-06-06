@@ -34,7 +34,7 @@ public class Filter extends OncePerRequestFilter {
 
     // phần này
     private final List<String> PUBLIC_API = List.of(
-            "POST:/api/register",
+//            "POST:/api/register",
             "POST:/api/login"
     );
 

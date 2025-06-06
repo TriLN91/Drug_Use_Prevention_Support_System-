@@ -1,105 +1,106 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-            const res = await fetch('http://localhost:8080/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
-            });
-            if (!res.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await res.json();
-            // Giả sử API trả về user nếu đăng nhập thành công, trả về lỗi nếu thất bại
-            const found = data.user || data; // Tùy vào cấu trúc trả về của API
-            if (found && (found.username === username)) {
-                localStorage.setItem('user', JSON.stringify(found));
-                localStorage.setItem('full_name', found.fullName);
-                localStorage.setItem('id', found.id);
-                if (found.role_id === 1 || found.role === 'Admin') {
-                    navigate('/admin');
-                } else {
-                    navigate('/');
-                }
-            } else {
-                setError('Invalid username or password');
-            }
-        } catch (err) {
-            console.error('Error fetching data:', err);
-            setError('An error occurred while logging in');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const res = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username, // ✅ đúng key backend yêu cầu
+          password,
+        }),
+      });
+
+      if (!res.ok) {
+        const message = await res.text();
+        throw new Error(message || 'Login failed');
+      }
+
+      const data = await res.json();
+
+      if (data.token) {
+        // ✅ Lưu token và thông tin người dùng
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('full_name', data.fullName || '');
+        localStorage.setItem('id', data.id || '');
+        localStorage.setItem('phonenumber', data.phoneNumber || '');
+
+        // ✅ Điều hướng theo role
+        if (data.role === 'ADMIN') {
+          navigate('/admin');
+        } else {
+          navigate('/');
         }
-    };
+      } else {
+        setError('Invalid response: Token not found');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(err.message || 'An error occurred while logging in');
+    }
+  };
 
-    return (
-        <div className="flex min-h-screen bg-white items-center justify-center">
-            <div className="flex-1 flex flex-col items-center justify-center">
-                {/* Logo */}
-                <img
-                    src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
-                    alt="WeHope Logo"
-                    className="w-52 mb-2"
-                />
-                <div className="font-semibold text-lg mb-8 text-gray-700">
-                    Sign in
-                </div>
-                {/* Form */}
-                <form className="w-[400px] max-w-[90%]" onSubmit={handleSubmit}>
-                    <div className="flex gap-3 mb-4">
-                        <input
-                            type="text"
-                            placeholder="UserName"
-                            className="flex-1 p-2.5 border border-gray-300 rounded"
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-3 mb-4">
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="flex-1 p-2.5 border border-gray-300 rounded"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                        />
-                    </div>
-                    {error && <div className="text-red-500 mb-2 text-sm">{error}</div>}
-                    <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-3 font-semibold text-base mb-3 shadow-md hover:bg-blue-700 transition">
-                        Sign in
-                    </button>
-                    <div className="text-center mb-4 text-sm">
-                        You don't have an account?{' '}
-                        <a href="/register" className="text-blue-600 hover:underline">Sign up</a>
-                    </div>
-                    <div className="flex items-center my-4">
-                        <div className="flex-1 h-px bg-gray-300" />
-                        <span className="mx-3 text-gray-400">or</span>
-                        <div className="flex-1 h-px bg-gray-300" />
-                    </div>
-                    <div className="flex gap-4 justify-center">
-                        <button type="button" className="flex-1 flex items-center justify-center border border-gray-300 rounded-lg py-2.5 bg-white cursor-pointer font-medium hover:bg-gray-50 transition">
-                            <img src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748867725/R_votn69.png" alt="Google" className="w-6 mr-2" />
-                            Sign up with Google
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
+  return (
+    <div className="flex min-h-screen bg-white items-center justify-center">
+      <div className="flex-1 flex flex-col items-center justify-center px-4">
+        <img
+          src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
+          alt="WeHope Logo"
+          className="w-52 mb-4"
+        />
+        <div className="font-semibold text-lg mb-6 text-gray-700">Sign in</div>
+
+        <form className="w-full max-w-sm" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full mb-4 p-2.5 border border-gray-300 rounded"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full mb-4 p-2.5 border border-gray-300 rounded"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          {error && (
+            <div className="text-red-500 text-sm mb-3">{error}</div>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold hover:bg-blue-700 transition"
+          >
+            Sign in
+          </button>
+
+          <div className="text-center mt-4 text-sm">
+            Don't have an account?{' '}
+            <a href="/register" className="text-blue-600 hover:underline">
+              Sign up
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default LoginPage;
