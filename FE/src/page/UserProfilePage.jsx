@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/features/userSlide';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 
 function UserProfilePage() {
-    const [user, setUser] = useState({
+    const reduxUser = useSelector(state => state.user.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [user, setUserState] = useState({
         id: '',
         full_name: '',
         phonenumber: '',
@@ -17,75 +25,87 @@ function UserProfilePage() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     useEffect(() => {
-        // Get id from localStorage to identify current user
-        const id = localStorage.getItem('id');
-        if (id) {
-            fetch('http://localhost:5000/Users')
-                .then(res => res.json())
-                .then(data => {
-                    const foundUser = data.find(u => String(u.id) === String(id));
-                    if (foundUser) setUser({ ...foundUser, email: foundUser.email || '' });
-                });
+        // Ưu tiên lấy user từ Redux, fallback localStorage
+        let currentUser = reduxUser;
+        if (!currentUser) {
+            try {
+                currentUser = JSON.parse(localStorage.getItem('user'));
+            } catch {
+                currentUser = null;
+            }
         }
-    }, []);
+        if (currentUser && currentUser.id) {
+            setUserState({ ...currentUser, email: currentUser.email || '' });
+        } else {
+            toast.error('User not found. Please login again.');
+            setTimeout(() => {
+                navigate('/login');
+            }, 1200);
+        }
+    }, [reduxUser, navigate]);
 
     const handleChange = e => {
-        setUser({ ...user, [e.target.name]: e.target.value });
+        setUserState({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSave = () => {
-        // Call API to update user info (PUT)
-        fetch(`http://localhost:5000/Users/${user.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        })
-            .then(res => {
-                if (res.ok) {
-                    Object.keys(user).forEach(key => {
-                        localStorage.setItem(key, user[key]);
-                    });
-                    setEditMode(false);
-                    alert('Profile updated successfully!');
-                } else {
-                    alert('Update failed!');
-                }
-            })
-            .catch(() => alert('An error occurred!'));
+    const handleSave = async () => {
+        try {
+            const res = await fetch(`http://localhost:5000/Users/${user.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user)
+            });
+            if (res.ok) {
+                dispatch(setUser(user));
+                localStorage.setItem('user', JSON.stringify(user));
+                setEditMode(false);
+                toast.success('Profile updated successfully!');
+            } else {
+                toast.error('Update failed!');
+            }
+        } catch {
+            toast.error('An error occurred!');
+        }
     };
 
-    const handleChangePassword = () => {
+    const handleChangePassword = async () => {
         if (!newPassword || !confirmPassword) {
-            alert('Please enter new password and confirm it.');
+            toast.error('Please enter new password and confirm it.');
+            return;
+        }
+        if (newPassword.length < 6) {
+            toast.error('Password must be at least 6 characters.');
             return;
         }
         if (newPassword !== confirmPassword) {
-            alert('Password confirmation does not match!');
+            toast.error('Password confirmation does not match!');
             return;
         }
-        // Update new password
-        const updatedUser = { ...user, password: newPassword };
-        fetch(`http://localhost:5000/Users/${user.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedUser)
-        })
-            .then(res => {
-                if (res.ok) {
-                    setUser(updatedUser);
-                    localStorage.setItem('password', newPassword);
-                    setNewPassword('');
-                    setConfirmPassword('');
-                    alert('Password changed successfully!');
-                } else {
-                    alert('Password change failed!');
-                }
-            })
-            .catch(() => alert('An error occurred!'));
+        try {
+            const updatedUser = { ...user, password: newPassword };
+            const res = await fetch(`http://localhost:5000/Users/${user.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedUser)
+            });
+            if (res.ok) {
+                setUserState(updatedUser);
+                dispatch(setUser(updatedUser));
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                setNewPassword('');
+                setConfirmPassword('');
+                toast.success('Password changed successfully!');
+            } else {
+                toast.error('Password change failed!');
+            }
+        } catch {
+            toast.error('An error occurred!');
+        }
     };
 
     return (
         <div className="max-w-xl mx-auto bg-white rounded shadow p-8 mt-10 mb-10">
+            <ToastContainer autoClose={1200} />
             <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">User Profile</h2>
             <div className="flex flex-col gap-4">
                 <label className="font-semibold">Full Name</label>
@@ -190,12 +210,14 @@ function UserProfilePage() {
                             <button
                                 onClick={handleSave}
                                 className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
+                                type="button"
                             >
                                 Save
                             </button>
                             <button
-                                onClick={() => setEditMode(false)}
+                                onClick={() => navigate('/')}
                                 className="border border-gray-400 px-6 py-2 rounded font-semibold hover:bg-gray-100"
+                                type="button"
                             >
                                 Cancel
                             </button>
@@ -204,6 +226,7 @@ function UserProfilePage() {
                         <button
                             onClick={() => setEditMode(true)}
                             className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
+                            type="button"
                         >
                             Edit Profile
                         </button>
