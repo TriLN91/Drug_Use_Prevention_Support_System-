@@ -25,7 +25,7 @@ function UserProfilePage() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     useEffect(() => {
-        // Ưu tiên lấy user từ Redux, fallback localStorage
+        // Prefer Redux user, fallback to localStorage
         let currentUser = reduxUser;
         if (!currentUser) {
             try {
@@ -215,7 +215,7 @@ function UserProfilePage() {
                                 Save
                             </button>
                             <button
-                                onClick={() => navigate('/')}
+                                onClick={() => setEditMode(false)}
                                 className="border border-gray-400 px-6 py-2 rounded font-semibold hover:bg-gray-100"
                                 type="button"
                             >
@@ -231,6 +231,16 @@ function UserProfilePage() {
                             Edit Profile
                         </button>
                     )}
+                </div>
+                {/* Back to Home button */}
+                <div className="flex justify-center mt-4">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="bg-gray-200 text-gray-800 px-6 py-2 rounded font-semibold hover:bg-gray-300 transition"
+                        type="button"
+                    >
+                        Back to Home
+                    </button>
                 </div>
             </div>
         </div>
