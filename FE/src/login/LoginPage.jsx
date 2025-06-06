@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/features/userSlide';
 import 'react-toastify/dist/ReactToastify.css';
 
 function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,6 +21,7 @@ function LoginPage() {
                 (u) => u.username === username && u.password === password
             );
             if (found) {
+                dispatch(setUser(found)); // Lưu user vào Redux
                 localStorage.setItem('user', JSON.stringify(found));
                 localStorage.setItem('full_name', found.full_name);
                 localStorage.setItem('id', found.id);
