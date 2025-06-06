@@ -95,6 +95,18 @@
       "gender": "M",
       "password": "123456",
       "role_id": 2
+    },
+    {
+      "id": "85ee",
+      "full_name": "Demo User3",
+      "username": "user3",
+      "email": "user3@gmail.com",
+      "phonenumber": "0987654321",
+      "address": "456 Second St",
+      "date_of_birth": "2002-01-01",
+      "gender": "F",
+      "password": "123456",
+      "role_id": 2
     }
   ],
   "Roles": [

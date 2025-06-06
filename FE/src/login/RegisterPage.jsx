@@ -14,34 +14,59 @@ function RegisterPage() {
     gender: 'M',
     password: '',
     confirmPassword: '',
-    role_id: 2 // mặc định là User
+    role_id: 2
   });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: false }); // clear error khi nhập lại
+  };
+
+  const validate = () => {
+    let newErrors = {};
+    if (!form.full_name) newErrors.full_name = true;
+    if (!form.username) newErrors.username = true;
+    if (!form.email) newErrors.email = true;
+    if (!form.password) newErrors.password = true;
+    if (!form.confirmPassword) newErrors.confirmPassword = true;
+
+    // Email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (form.email && !emailRegex.test(form.email)) newErrors.email = true;
+
+    // Phone format (10-11 số)
+    if (form.phonenumber && !/^\d{10,11}$/.test(form.phonenumber)) newErrors.phonenumber = true;
+
+    // Password length
+    if (form.password && form.password.length < 6) newErrors.password = true;
+
+    // Password match
+    if (form.password !== form.confirmPassword) {
+      newErrors.password = true;
+      newErrors.confirmPassword = true;
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      toast.error('Please check your information');
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-    // Kiểm tra các trường bắt buộc
-    if (!form.username || !form.password || !form.email || !form.full_name) {
-      toast.error('Please fill all required fields');
-      return;
-    }
+    if (!validate()) return;
     try {
-      // Kiểm tra username đã tồn tại chưa
       const res = await fetch(`http://localhost:5000/Users?username=${form.username}`);
       const exist = await res.json();
       if (exist.length > 0) {
         toast.error('Username already exists');
+        setErrors({ ...errors, username: true });
         return;
       }
-      // Gửi dữ liệu đăng ký
       const userData = { ...form };
       delete userData.confirmPassword;
       const res2 = await fetch('http://localhost:5000/Users', {
@@ -53,7 +78,7 @@ function RegisterPage() {
         toast.success('Register successful! Please login.');
         setTimeout(() => {
           navigate('/login');
-        }, 500);
+        }, 800);
       } else {
         toast.error('Register failed');
       }
@@ -65,7 +90,7 @@ function RegisterPage() {
 
   return (
     <div className="flex min-h-screen bg-white items-center justify-center">
-      <ToastContainer autoClose={500} />
+      <ToastContainer autoClose={800} />
       <div className="flex-1 flex flex-col items-center justify-center">
         <img
           src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
@@ -76,80 +101,98 @@ function RegisterPage() {
           Create Account
         </div>
         <form className="w-[400px] max-w-[90%]" onSubmit={handleSubmit}>
-          <input
-            name="full_name"
-            type="text"
-            placeholder="Full Name"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.full_name}
-            onChange={handleChange}
-          />
-          <input
-            name="username"
-            type="text"
-            placeholder="Username"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.username}
-            onChange={handleChange}
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email Address"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.email}
-            onChange={handleChange}
-          />
-          <input
-            name="phonenumber"
-            type="text"
-            placeholder="Phone Number"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.phonenumber}
-            onChange={handleChange}
-          />
-          <input
-            name="address"
-            type="text"
-            placeholder="Address"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.address}
-            onChange={handleChange}
-          />
-          <input
-            name="date_of_birth"
-            type="date"
-            placeholder="Date of Birth"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.date_of_birth}
-            onChange={handleChange}
-          />
-          <select
-            name="gender"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.gender}
-            onChange={handleChange}
-          >
-            <option value="M">Male</option>
-            <option value="F">Female</option>
-            <option value="O">Other</option>
-          </select>
-          <input
-            name="password"
-            type="password"
-            placeholder="Password"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.password}
-            onChange={handleChange}
-          />
-          <input
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm Password"
-            className="block w-full p-2.5 border border-gray-300 rounded mb-3"
-            value={form.confirmPassword}
-            onChange={handleChange}
-          />
+          <div className="flex gap-3 mb-4">
+            <input
+              name="full_name"
+              type="text"
+              placeholder="Full Name"
+              className={`flex-1 p-2.5 border ${errors.full_name ? 'border-red-500' : 'border-gray-300'} rounded`}
+              value={form.full_name}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="username"
+              type="text"
+              placeholder="Username"
+              className={`flex-1 p-2.5 border ${errors.username ? 'border-red-500' : 'border-gray-300'} rounded`}
+              value={form.username}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="email"
+              type="email"
+              placeholder="Email Address"
+              className={`flex-1 p-2.5 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded`}
+              value={form.email}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="phonenumber"
+              type="text"
+              placeholder="Phone Number"
+              className={`flex-1 p-2.5 border ${errors.phonenumber ? 'border-red-500' : 'border-gray-300'} rounded`}
+              value={form.phonenumber}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="address"
+              type="text"
+              placeholder="Address"
+              className="flex-1 p-2.5 border border-gray-300 rounded"
+              value={form.address}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="date_of_birth"
+              type="date"
+              placeholder="Date of Birth"
+              className="flex-1 p-2.5 border border-gray-300 rounded"
+              value={form.date_of_birth}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <select
+              name="gender"
+              className="flex-1 p-2.5 border border-gray-300 rounded"
+              value={form.gender}
+              onChange={handleChange}
+            >
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+              <option value="O">Other</option>
+            </select>
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="password"
+              type="password"
+              placeholder="Password"
+              className={`flex-1 p-2.5 border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded`}
+              value={form.password}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              className={`flex-1 p-2.5 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded`}
+              value={form.confirmPassword}
+              onChange={handleChange}
+            />
+          </div>
           <button
             type="submit"
             className="w-full bg-blue-500 text-white rounded-lg py-3 font-semibold text-base mb-3 shadow-md hover:bg-blue-700 transition"
