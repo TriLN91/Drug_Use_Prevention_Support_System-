@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RegisterPage() {
   const [form, setForm] = useState({
@@ -14,7 +16,6 @@ function RegisterPage() {
     confirmPassword: '',
     role_id: 2 // mặc định là User
   });
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,46 +24,48 @@ function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     if (form.password !== form.confirmPassword) {
-        setError('Passwords do not match');
-        return;
+      toast.error('Passwords do not match');
+      return;
     }
     // Kiểm tra các trường bắt buộc
     if (!form.username || !form.password || !form.email || !form.full_name) {
-        setError('Please fill all required fields');
-        return;
+      toast.error('Please fill all required fields');
+      return;
     }
     try {
-        // Kiểm tra username đã tồn tại chưa
-        const res = await fetch(`http://localhost:5000/Users?username=${form.username}`);
-        const exist = await res.json();
-        if (exist.length > 0) {
-            setError('Username already exists');
-            return;
-        }
-        // Gửi dữ liệu đăng ký
-        const userData = { ...form };
-        delete userData.confirmPassword;
-        const res2 = await fetch('http://localhost:5000/Users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
-        if (res2.ok) {
-            alert('Register successful! Please login.');
-            navigate('/login');
-        } else {
-            setError('Register failed');
-        }
+      // Kiểm tra username đã tồn tại chưa
+      const res = await fetch(`http://localhost:5000/Users?username=${form.username}`);
+      const exist = await res.json();
+      if (exist.length > 0) {
+        toast.error('Username already exists');
+        return;
+      }
+      // Gửi dữ liệu đăng ký
+      const userData = { ...form };
+      delete userData.confirmPassword;
+      const res2 = await fetch('http://localhost:5000/Users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+      });
+      if (res2.ok) {
+        toast.success('Register successful! Please login.');
+        setTimeout(() => {
+          navigate('/login');
+        }, 500);
+      } else {
+        toast.error('Register failed');
+      }
     } catch (err) {
-        console.error('Error during registration:', err);
-        setError('An error occurred while registering. Please try again later.');
+      console.error('Error during registration:', err);
+      toast.error('An error occurred while registering. Please try again later.');
     }
   };
 
   return (
     <div className="flex min-h-screen bg-white items-center justify-center">
+      <ToastContainer autoClose={500} />
       <div className="flex-1 flex flex-col items-center justify-center">
         <img
           src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
@@ -147,7 +150,6 @@ function RegisterPage() {
             value={form.confirmPassword}
             onChange={handleChange}
           />
-          {error && <div className="text-red-500 mb-2 text-sm">{error}</div>}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white rounded-lg py-3 font-semibold text-base mb-3 shadow-md hover:bg-blue-700 transition"
