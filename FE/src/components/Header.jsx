@@ -15,7 +15,7 @@ function Header() {
     { label: 'About Us', path: '#' },
     { label: 'Courses', path: '/courseList' },
     { label: 'Survey', path: '#' },
-    { label: 'Online Consultant', path: '#' },
+    { label: 'Online Consultant', path: '/consultantList' },
     { label: 'News', path: '#' },
     { label: 'Blogs', path: '#' },
     { label: 'Contact', path: '#' },

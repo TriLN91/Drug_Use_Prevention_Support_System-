@@ -11,24 +11,31 @@ function LoginPage() {
         e.preventDefault();
         setError('');
         try {
-            const res = await fetch('http://localhost:5000/Users' + (username ? `?username=${username}` : ''));
+            const res = await fetch('http://localhost:8080/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
+            });
+            if (!res.ok) {
+                throw new Error('Network response was not ok');
+            }
             const data = await res.json();
-            const users = data.User || data;
-            const found = users.find(
-                (u) => u.username === username && u.password === password
-            );
-            if (found) {
-                // Lưu user vào localStorage
+            // Giả sử API trả về user nếu đăng nhập thành công, trả về lỗi nếu thất bại
+            const found = data.user || data; // Tùy vào cấu trúc trả về của API
+            if (found && (found.username === username)) {
                 localStorage.setItem('user', JSON.stringify(found));
-                localStorage.setItem('full_name', found.full_name);
-                localStorage.setItem('id', found.id); // Lấy từ dữ liệu trả về
-                // Kiểm tra role
+                localStorage.setItem('full_name', found.fullName);
+                localStorage.setItem('id', found.id);
                 if (found.role_id === 1 || found.role === 'Admin') {
                     navigate('/admin');
                 } else {
                     navigate('/');
                 }
-
             } else {
                 setError('Invalid username or password');
             }

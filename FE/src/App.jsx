@@ -12,6 +12,7 @@ import AdminLayout from './admin/AdminLayout';
 import Dashboard from './admin/page/Dashboard';
 import UserManage from './admin/page/UserManage';
 import CourseManage from './admin/page/CourseManage';
+import ConsultantList from './page/ConsultantList'
 
 
 function RequireAdmin({ children }) {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/course" element={<CourseVideo />} />
         <Route path="/servey" element={<Servey />} />
         <Route path="/quiz" element={<CourseQuiz />} />
+         <Route path="/consultantList" element={<ConsultantList />} />
 
         <Route path="/admin" element={
           <RequireAdmin>
@@ -40,6 +42,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="users" element={<UserManage />} />
           <Route path="courses" element={<CourseManage />} />
+         
         </Route>
       </Routes>
     </BrowserRouter>

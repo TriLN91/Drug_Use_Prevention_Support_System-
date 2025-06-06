@@ -34,26 +34,28 @@ function RegisterPage() {
         return;
     }
     try {
-        // Kiểm tra username đã tồn tại chưa
-        const res = await fetch(`http://localhost:5000/User?username=${form.username}`);
-        const exist = await res.json();
-        if (exist.length > 0) {
-            setError('Username already exists');
-            return;
-        }
         // Gửi dữ liệu đăng ký
-        const userData = { ...form };
-        delete userData.confirmPassword;
-        const res2 = await fetch('http://localhost:5000/User', {
+        const userData = {
+            userName: form.username,
+            password: form.password,
+            email: form.email,
+            fullName: form.full_name,
+            phoneNumber: form.phonenumber,
+            address: form.address,
+            dateOfBirth: form.date_of_birth, // Định dạng yyyy-MM-dd
+            gender: form.gender === 'M' ? 'MALE' : form.gender === 'F' ? 'FEMALE' : 'OTHER'
+        };
+        const res = await fetch('http://localhost:8080/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
-        if (res2.ok) {
+        if (res.ok) {
             alert('Register successful! Please login.');
             navigate('/login');
         } else {
-            setError('Register failed');
+            const errData = await res.json();
+            setError(errData.message || 'Register failed');
         }
     } catch (err) {
         console.error('Error during registration:', err);
