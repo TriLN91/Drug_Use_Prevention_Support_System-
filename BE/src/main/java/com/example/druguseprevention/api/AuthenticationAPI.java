@@ -8,27 +8,34 @@ import com.example.druguseprevention.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*", allowCredentials = "true")
 @RequestMapping("/api")
 public class AuthenticationAPI {
 
     @Autowired
     AuthenticationService authenticationService;
 
-    @PostMapping("/api/register")
+    @PostMapping("/register")
     public ResponseEntity register(@Valid @RequestBody RegisterRequest registerRequest){
         User newUser = authenticationService.register(registerRequest);
         return ResponseEntity.ok(newUser);
     }
 
-    @PostMapping("/api/login")
-    public ResponseEntity login (@RequestBody LoginRequest loginRequest){
-        UserResponse userResponse = authenticationService.login(loginRequest);
-        return ResponseEntity.ok(userResponse);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            UserResponse userResponse = authenticationService.login(loginRequest);
+            return ResponseEntity.ok(userResponse);
+        } catch (Exception e) {
+            // log chi tiết để debug
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed: " + e.getMessage());
+        }
     }
+
 }
