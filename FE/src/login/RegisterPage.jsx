@@ -35,7 +35,7 @@ function RegisterPage() {
     }
     try {
         // Kiểm tra username đã tồn tại chưa
-        const res = await fetch(`http://localhost:5000/User?username=${form.username}`);
+        const res = await fetch(`http://localhost:5000/Users?username=${form.username}`);
         const exist = await res.json();
         if (exist.length > 0) {
             setError('Username already exists');
@@ -44,7 +44,7 @@ function RegisterPage() {
         // Gửi dữ liệu đăng ký
         const userData = { ...form };
         delete userData.confirmPassword;
-        const res2 = await fetch('http://localhost:5000/User', {
+        const res2 = await fetch('http://localhost:5000/Users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
@@ -65,7 +65,7 @@ function RegisterPage() {
     <div className="flex min-h-screen bg-white items-center justify-center">
       <div className="flex-1 flex flex-col items-center justify-center">
         <img
-          src="https://cdn.discordapp.com/attachments/1203731339766141021/1376560938315940014/image.png?ex=68366e86&is=68351d06&hm=f892db442c80597c8eb2da733f202a874e2152b73bb2e7f57326bb7ba3579200&"
+          src="https://res.cloudinary.com/dwjtg28ti/image/upload/v1748824738/z6621531660497_00c45b7532add5b3a49055fb93d63a53_ewd8xj.jpg"
           alt="WeHope Logo"
           className="w-52 mb-2"
         />
