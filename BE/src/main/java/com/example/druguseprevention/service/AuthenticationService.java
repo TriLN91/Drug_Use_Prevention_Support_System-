@@ -1,5 +1,6 @@
 package com.example.druguseprevention.service;
 
+import com.example.druguseprevention.dto.EmailDetail;
 import com.example.druguseprevention.dto.LoginRequest;
 import com.example.druguseprevention.dto.RegisterRequest;
 import com.example.druguseprevention.entity.User;
@@ -29,6 +30,9 @@ public class AuthenticationService implements UserDetailsService {
 
 
 
+    @Autowired
+    EmailService emailService;
+
     public User register (RegisterRequest registerRequest){
         User user = new User();
         user.setUsername(registerRequest.getUserName());
@@ -41,7 +45,11 @@ public class AuthenticationService implements UserDetailsService {
         user.setGender(registerRequest.getGender());
         // Gán role mặc định là "Member"
         user.setRole(Role.MEMBER);
-
+        // Send email
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(user.getEmail());
+        emailDetail.setSubject("Welcome to my system");
+        emailService.sendEmail(emailDetail,user);
         return authenticationRepository.save(user);
     }
 
