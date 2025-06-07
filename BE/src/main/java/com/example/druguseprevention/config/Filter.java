@@ -32,13 +32,9 @@ public class Filter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
 
-    // phần này
+    // phần này dùng để public các method api
     private final List<String> PUBLIC_API = List.of(
-<<<<<<< Updated upstream
-        "POST:/api/register",
-=======
             "POST:/api/register",
->>>>>>> Stashed changes
             "POST:/api/login"
     );
 
