@@ -34,7 +34,11 @@ public class Filter extends OncePerRequestFilter {
 
     // phần này
     private final List<String> PUBLIC_API = List.of(
+<<<<<<< Updated upstream
         "POST:/api/register",
+=======
+            "POST:/api/register",
+>>>>>>> Stashed changes
             "POST:/api/login"
     );
 
@@ -81,10 +85,8 @@ public class Filter extends OncePerRequestFilter {
                 resolver.resolveException(request, response, null, new AuthenticationException("Empty token!") {
                 });
             }
-
             //có cung cấp token
             // verify token
-
             User user;
             try {
                 // từ token tìm ra thằng đó là ai
