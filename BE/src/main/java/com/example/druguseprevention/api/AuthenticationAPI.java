@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@CrossOrigin("*")// cho phép tất cả truy cập
+//@CrossOrigin(origins = "*")
 public class AuthenticationAPI {
 
     @Autowired
