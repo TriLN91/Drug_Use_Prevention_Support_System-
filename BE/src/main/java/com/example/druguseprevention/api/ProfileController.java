@@ -4,6 +4,7 @@ import com.example.druguseprevention.dto.ProfileDTO;
 import com.example.druguseprevention.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
@@ -14,19 +15,22 @@ public class ProfileController {
         this.userService = userService;
     }
 
+    // GET: Lấy thông tin hồ sơ
     @GetMapping
     public ResponseEntity<ProfileDTO> getProfile() {
         return ResponseEntity.ok(userService.getProfile());
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateProfile(@RequestBody ProfileDTO dto) {
-        userService.updateProfile(dto);
-        return ResponseEntity.ok("Updated");
+    // PUT: Cập nhật thông tin hồ sơ
+//    @PutMapping
+//    public ResponseEntity<String> updateProfile(@RequestBody ProfileDTO profileDTO) {
+//        userService.updateProfile(profileDTO);
+//        return ResponseEntity.ok("Cập nhật hồ sơ thành công");
+//    }
+    @PatchMapping
+    public ResponseEntity<?> updateProfile(@RequestBody ProfileDTO profileDTO) {
+        userService.updateProfile(profileDTO);
+        return ResponseEntity.ok("Cập nhật hồ sơ thành công");
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProfileDTO> getProfileById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getProfileById(id));
-    }
 }
