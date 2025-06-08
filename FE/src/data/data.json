@@ -5,7 +5,7 @@
       "username": "admin",
       "password": "1",
       "email": "admin@fptdaigaku.org",
-      "full_name": "Admin Drug",
+      "full_name": "Admin",
       "phonenumber": "0987654321",
       "address": "123 Main St",
       "date_of_birth": "2000-01-01",
@@ -58,6 +58,54 @@
       "date_of_birth": "1997-04-20",
       "gender": "M",
       "password": "jack5m",
+      "role_id": 2
+    },
+    {
+      "id": "1001",
+      "username": "consultant1",
+      "password": "con123",
+      "email": "consultant1@wehope.org",
+      "full_name": "Nguyen Thi Consultant",
+      "phonenumber": "0909123456",
+      "address": "123 Consultant St",
+      "date_of_birth": "1985-03-10",
+      "gender": "F",
+      "role_id": 4
+    },
+    {
+      "id": "1002",
+      "username": "consultant2",
+      "password": "con456",
+      "email": "consultant2@wehope.org",
+      "full_name": "Tran Van Tu Van",
+      "phonenumber": "0911222333",
+      "address": "456 Tu Van Ave",
+      "date_of_birth": "1990-07-22",
+      "gender": "M",
+      "role_id": 4
+    },
+     {
+      "id": "1003",
+      "username": "consultant3",
+      "password": "con456",
+      "email": "consultant2@wehope.org",
+      "full_name": "La Ngoc Tham Van",
+      "phonenumber": "0911222333",
+      "address": "456 Tu Van Ave",
+      "date_of_birth": "1990-07-22",
+      "gender": "M",
+      "role_id": 4
+    },
+     {
+      "id": "1004",
+      "username": "consultant2",
+      "password": "con456",
+      "email": "consultant2@wehope.org",
+      "full_name": "Nguyen Van Van tu",
+      "phonenumber": "0911222333",
+      "address": "456 Tu Van Ave",
+      "date_of_birth": "1990-07-22",
+      "gender": "M",
       "role_id": "4"
     },
     {
@@ -69,7 +117,7 @@
       "address": "Quảng Ngãi",
       "date_of_birth": "2004-03-01",
       "gender": "M",
-      "role_id": "3",
+      "role_id": "4",
       "password": "123456"
     },
     {
@@ -226,6 +274,44 @@
         "They have no effect"
       ],
       "correct": 1
+    }
+  ],
+  "ConsultantSchedule": [
+    {
+      "schedule_id": 1,
+      "consultant_id": "1001",
+      "work_date": "2025-06-06",
+      "start_time": "07:00",
+      "end_time": "07:45",
+      "is_available": false,
+      "max_appointments": 1
+    },
+    {
+      "schedule_id": 2,
+      "consultant_id": "1001",
+      "work_date": "2025-09-06",
+      "start_time": "08:00",
+      "end_time": "08:45",
+      "is_available": true,
+      "max_appointments": 1
+    },
+    {
+      "schedule_id": 3,
+      "consultant_id": "1002",
+      "work_date": "2025-06-06",
+      "start_time": "07:00",
+      "end_time": "07:45",
+      "is_available": true,
+      "max_appointments": 1
+    },
+    {
+      "schedule_id": 4,
+      "consultant_id": "1002",
+      "work_date": "2025-06-06",
+      "start_time": "14:00",
+      "end_time": "14:45",
+      "is_available": true,
+      "max_appointments": 1
     }
   ]
 }
