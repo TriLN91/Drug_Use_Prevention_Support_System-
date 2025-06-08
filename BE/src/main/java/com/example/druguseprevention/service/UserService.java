@@ -8,8 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserService {
@@ -26,21 +24,17 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public List<ProfileDTO> getProfiles() {
-        // Ví dụ: lấy danh sách user từ DB và chuyển sang DTO
-        List<User> users = userRepository.findAll();
-        List<ProfileDTO> dtos = new ArrayList<>();
-        for (User user : users) {
-            ProfileDTO dto = new ProfileDTO();
-            dto.setFullName(user.getFullName());
-            dto.setPhoneNumber(user.getPhoneNumber());
-            dto.setAddress(user.getAddress());
-            dto.setDateOfBirth(user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null);
-            dto.setGender(user.getGender() != null ? user.getGender().toString() : null);
-            dtos.add(dto);
-        }
-        return dtos;
+    public ProfileDTO getProfile() {
+        User user = getCurrentUser();
+        ProfileDTO dto = new ProfileDTO();
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setAddress(user.getAddress());
+        dto.setDateOfBirth(user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null);
+        dto.setGender(user.getGender() != null ? user.getGender().toString() : null);
+        return dto;
     }
+
     public void updateProfile(ProfileDTO dto) {
         User user = getCurrentUser();
         user.setFullName(dto.getFullName());

@@ -5,11 +5,9 @@ import com.example.druguseprevention.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/profile")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProfileController {
 
     private final UserService userService;
@@ -20,8 +18,8 @@ public class ProfileController {
 
     // GET: Lấy thông tin hồ sơ
     @GetMapping
-    public ResponseEntity<List<ProfileDTO>> getProfiles() {
-        return ResponseEntity.ok(userService.getProfiles());
+    public ResponseEntity<ProfileDTO> getProfile() {
+        return ResponseEntity.ok(userService.getProfile());
     }
 
     // PUT: Cập nhật thông tin hồ sơ

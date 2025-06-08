@@ -1,52 +1,37 @@
-import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import HomePage from './page/HomePage'
-import LoginPage from './login/LoginPage'
-import RegisterPage from './login/RegisterPage'
-import CouresListPage from './page/CouresListPage'
-import UserProfilePage from './page/UserProfilePage'
-import Servey from './page/Servey'
-import CourseVideo from './page/CourseVideo'
-import CourseQuiz from './page/CourseQuiz'
-import AdminLayout from './admin/AdminLayout';
-import Dashboard from './admin/page/Dashboard';
-import UserManage from './admin/page/UserManage';
-import CourseManage from './admin/page/CourseManage';
-import ConsultantList from './page/ConsultantList'
+import React from 'react';
+import LoginPage from './pages/login';
+import RegisterPage from './pages/register';
+import { persistor, store } from './redux/store';
+import { Provider } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/es/integration/react';
+import HomePage from './member/page/HomePage';
 
-
-function RequireAdmin({ children }) {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  if (!user || user.role_id !== 1) return <Navigate to="/login" />;
-  return children;
-}
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/courseList" element={<CouresListPage />} />
-        <Route path="/userProfile" element={<UserProfilePage />} />
-        <Route path="/course" element={<CourseVideo />} />
-        <Route path="/servey" element={<Servey />} />
-        <Route path="/quiz" element={<CourseQuiz />} />
-         <Route path="/consultantList" element={<ConsultantList />} />
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <HomePage />,
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+    {
+      path: "/register",
+      element: <RegisterPage />,
+    },
 
-        <Route path="/admin" element={
-          <RequireAdmin>
-            <AdminLayout />
-          </RequireAdmin>
-        }>
-          <Route index element={<Dashboard />} />
-          <Route path="users" element={<UserManage />} />
-          <Route path="courses" element={<CourseManage />} />
-          <Route path="/admin/profile" element={<UserProfilePage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  )
+  ]);
+
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+      <RouterProvider router={router} />
+        </PersistGate>
+
+    </Provider>
+  );
 }
 
 export default App;

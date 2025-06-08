@@ -58,7 +58,6 @@
       "date_of_birth": "1997-04-20",
       "gender": "M",
       "password": "jack5m",
-<<<<<<< HEAD
       "role_id": 2
     },
     {
@@ -107,8 +106,6 @@
       "address": "456 Tu Van Ave",
       "date_of_birth": "1990-07-22",
       "gender": "M",
-      "role_id": 4
-=======
       "role_id": "4"
     },
     {
@@ -120,7 +117,7 @@
       "address": "Quảng Ngãi",
       "date_of_birth": "2004-03-01",
       "gender": "M",
-      "role_id": "3",
+      "role_id": "4",
       "password": "123456"
     },
     {
@@ -134,7 +131,6 @@
       "gender": "M",
       "role_id": "5",
       "password": "1"
->>>>>>> 0bf90d12729581f5a50b118e6486364ac12fb5f5
     }
   ],
   "Roles": [
@@ -269,7 +265,7 @@
     {
       "schedule_id": 2,
       "consultant_id": "1001",
-      "work_date": "2025-06-06",
+      "work_date": "2025-09-06",
       "start_time": "08:00",
       "end_time": "08:45",
       "is_available": true,
@@ -290,7 +286,7 @@
       "work_date": "2025-06-06",
       "start_time": "14:00",
       "end_time": "14:45",
-      "is_available": false,
+      "is_available": true,
       "max_appointments": 1
     }
   ]

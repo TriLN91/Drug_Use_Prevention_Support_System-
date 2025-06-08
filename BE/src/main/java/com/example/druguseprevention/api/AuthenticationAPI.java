@@ -8,34 +8,29 @@ import com.example.druguseprevention.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
-@CrossOrigin(origins = "*", allowCredentials = "true")
-@RequestMapping("/api")
+//@CrossOrigin(origins = "*")
 public class AuthenticationAPI {
 
     @Autowired
     AuthenticationService authenticationService;
 
-    @PostMapping("/register")
+    @PostMapping("/api/register")
     public ResponseEntity register(@Valid @RequestBody RegisterRequest registerRequest){
         User newUser = authenticationService.register(registerRequest);
         return ResponseEntity.ok(newUser);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            UserResponse userResponse = authenticationService.login(loginRequest);
-            return ResponseEntity.ok(userResponse);
-        } catch (Exception e) {
-            // log chi tiết để debug
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed: " + e.getMessage());
-        }
+    @PostMapping("/api/login")
+    public ResponseEntity login (@RequestBody LoginRequest loginRequest){
+        UserResponse userResponse = authenticationService.login(loginRequest);
+        return ResponseEntity.ok(userResponse);
     }
-
 }
