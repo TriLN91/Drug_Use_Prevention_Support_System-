@@ -14,7 +14,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // Áp dụng CORS cho tất cả các endpoint dưới /api/
                         .allowedOrigins("http://localhost:5173") // <-- Đảm bảo chính xác
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // <-- OPTIONS phải có
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") // <-- OPTIONS phải có
                         .allowedHeaders("*") // Cho phép tất cả các header (bao gồm Authorization)
                         .allowCredentials(true); // Quan trọng nếu bạn gửi cookie hoặc header Authorization
             }

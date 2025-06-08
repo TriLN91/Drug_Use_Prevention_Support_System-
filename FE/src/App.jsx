@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/es/integration/react';
 import HomePage from './member/page/HomePage';
+import UserProfilePage from './member/page/UserProfilePage';
 
 function App() {
   const router = createBrowserRouter([
@@ -20,6 +21,10 @@ function App() {
     {
       path: "/register",
       element: <RegisterPage />,
+    },
+     {
+      path: "/userProfile",
+      element: <UserProfilePage />,
     },
 
   ]);

@@ -9,20 +9,27 @@ function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
-  // Lấy thông tin người dùng từ Redux store
-  const user = useSelector(state => state.user); 
+  // Lấy toàn bộ trạng thái của user slice từ Redux store.
+  // Giả định user slice của bạn có thể trông như:
+  // { user: { username: '...', fullName: '...', ... }, token: '...', ... }
+  const userSliceState = useSelector(state => state.user); 
+
+  // Truy cập đối tượng user thực tế từ userSliceState, có thể là userSliceState.user
+  const currentUser = userSliceState ? userSliceState.user : null;
   
-  // Sử dụng user.fullName cho hiển thị tên người dùng
-  const display_name = user ? user.fullName : null; 
+  // Sử dụng fullName từ đối tượng user thực tế để hiển thị tên người dùng
+  const display_name = currentUser ? currentUser.fullName : null; 
 
   // useEffect để kiểm tra và khôi phục trạng thái người dùng khi component mount hoặc Redux state thay đổi
   useEffect(() => {
     console.log("Header useEffect: Component mounted or user/dispatch changed.");
-    console.log("Header useEffect: Current Redux user state:", user);
+    console.log("Header useEffect: Current Redux user slice state:", userSliceState);
+    console.log("Header useEffect: Current user object in slice:", currentUser);
 
-    // Điều kiện: Nếu không có thông tin người dùng trong Redux state (hoặc fullName bị thiếu)
-    // VÀ có token trong localStorage
-    if (!user || !user.fullName) {
+    // QUAN TRỌNG: Chỉ cố gắng khôi phục nếu currentUser.fullName chưa có
+    // Điều này đảm bảo rằng nếu dữ liệu đã có từ login response (qua Redux Persist),
+    // chúng ta sẽ không gọi API /profile nữa.
+    if (!currentUser || !currentUser.fullName) {
       const token = localStorage.getItem('token');
       console.log("Header useEffect: Token from localStorage:", token ? "Found" : "Not Found");
 
@@ -30,26 +37,20 @@ function Header() {
         const fetchUserProfile = async () => {
           try {
             console.log("Header useEffect: Attempting to fetch user profile from API...");
-            // QUAN TRỌNG: Đã sửa URL từ '/api/profile' thành 'profile'
+            // Đã sửa URL từ '/api/profile' thành 'profile'
             // vì baseURL của axios đã bao gồm '/api/'
             const response = await api.get('profile'); 
             console.log("Header useEffect: User profile fetched successfully:", response.data);
+            // Gửi action login để cập nhật Redux store với thông tin người dùng đã lấy.
+            // Điều này sẽ cập nhật userSliceState.user
             dispatch(login(response.data)); 
-            // toast.success("Thông tin người dùng đã được khôi phục!", { autoClose: 1500 }); // Có thể bỏ nếu không muốn toast mỗi lần tải trang
           } catch (error) {
             console.error("Header useEffect: Lỗi khi lấy thông tin hồ sơ người dùng:", error);
-            // Log chi tiết phản hồi lỗi từ API để gỡ lỗi
             if (error.response) {
               console.error("API error response data:", error.response.data);
               console.error("API error status:", error.response.status);
-              console.error("API error headers:", error.response.headers);
-            } else if (error.request) {
-              console.error("API request error:", error.request);
-            } else {
-              console.error("Lỗi chung:", error.message);
             }
 
-            // Nếu token bị thiếu hoặc không hợp lệ (401, 403), xóa token và đăng xuất
             if (error.response?.status === 401 || error.response?.status === 403) {
                  toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
             } else {
@@ -64,9 +65,7 @@ function Header() {
     } else {
       console.log("Header useEffect: User (fullName) đã có trong Redux state. Không cần fetch profile.");
     }
-  }, [user, dispatch]); // Dependencies: user và dispatch. 
-  // 'user' để React biết chạy lại useEffect khi Redux state của user thay đổi (do login/logout)
-  // 'dispatch' để React biết hàm fetchUserProfile không thay đổi giữa các renders
+  }, [userSliceState, currentUser, dispatch]); // Dependencies được cập nhật
 
   // Xử lý sự kiện đăng xuất
   const handleLogout = () => {

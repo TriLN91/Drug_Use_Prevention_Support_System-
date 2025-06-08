@@ -1,49 +1,115 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+// Đã loại bỏ import { useSelector } từ react-redux vì sẽ gọi API trực tiếp
+import api from '../../config/axios'; // Import api instance của axios
+import { toast } from 'react-toastify'; // Import toast cho thông báo
 
 function UserProfilePage() {
-    const [user, setUser] = useState({
-        fullName: '',
-        phoneNumber: '',
-        address: '',
-        dateOfBirth: '',
-        gender: ''
-    });
+    // Không còn lấy currentUser từ Redux store nữa
+    // const userSliceState = useSelector(state => state.user);
+    // const currentUser = userSliceState ? userSliceState.user : null;
+
+    // Trạng thái cục bộ để lưu thông tin người dùng và chế độ chỉnh sửa
+    const [user, setUser] = useState(null); // Khởi tạo là null để hiển thị trạng thái tải
+    const [loading, setLoading] = useState(true); // Trạng thái tải
+    const [error, setError] = useState(null); // Trạng thái lỗi
     const [editMode, setEditMode] = useState(false);
 
+    // useEffect để lấy thông tin người dùng từ API khi component mount
     useEffect(() => {
-        // Lấy số điện thoại từ localStorage để xác định user hiện tại
-        const phoneNumber = localStorage.getItem('phonenumber');
-        fetch('http://localhost:8080/api/profile')
-            .then(res => res.json())
-            .then(data => {
-                // Tìm user theo phoneNumber
-                const foundUser = data.find(u => u.phoneNumber === phoneNumber);
-                if (foundUser) setUser(foundUser);
-            });
-    }, []);
+        const fetchUserProfile = async () => {
+            setLoading(true); // Bắt đầu tải
+            setError(null); // Xóa lỗi cũ
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
+                }
+
+                // Gửi yêu cầu GET đến /api/profile
+                // axios instance 'api' đã được cấu hình để tự động thêm header Authorization với token
+                const response = await api.get('profile'); 
+                
+                if (response.status === 200 && response.data) {
+                    // Cập nhật state user với dữ liệu từ API
+                    setUser({
+                        fullName: response.data.fullName || '',
+                        phoneNumber: response.data.phoneNumber || '',
+                        address: response.data.address || '',
+                        // Đảm bảo định dạng ngày sinh là YYYY-MM-DD cho input type="date"
+                        dateOfBirth: response.data.dateOfBirth ? new Date(response.data.dateOfBirth).toISOString().split('T')[0] : '',
+                        gender: response.data.gender || ''
+                    });
+                } else {
+                    throw new Error('Không thể lấy thông tin hồ sơ.');
+                }
+            } catch (err) {
+                console.error('Lỗi khi lấy thông tin hồ sơ:', err);
+                setError(err); // Lưu lỗi vào state
+                if (err.response) {
+                    toast.error(`Lỗi tải hồ sơ: ${err.response.data?.message || err.response.statusText}`);
+                } else {
+                    toast.error(`Lỗi mạng hoặc không xác định: ${err.message}`);
+                }
+            } finally {
+                setLoading(false); // Kết thúc tải
+            }
+        };
+
+        fetchUserProfile();
+    }, []); // Chỉ chạy một lần khi component mount
 
     const handleChange = e => {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
-    const handleSave = () => {
-        // Gửi API cập nhật thông tin user (nếu backend hỗ trợ)
-        fetch('http://localhost:8080/api/profile', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        })
-            .then(res => {
-                if (res.ok) {
-                    setEditMode(false);
-                    alert('Profile updated successfully!');
-                } else {
-                    alert('Update failed!');
-                }
-            })
-            .catch(() => alert('An error occurred!'));
+    const handleSave = async () => {
+        try {
+            const token = localStorage.getItem('token'); 
+            if (!token) {
+                toast.error('Không tìm thấy token xác thực. Vui lòng đăng nhập lại.');
+                return;
+            }
+
+            // Gửi API cập nhật thông tin user bằng phương thức PATCH
+            const response = await api.patch('profile', user); // Sử dụng PATCH
+            
+            if (response.status === 200) { 
+                setEditMode(false);
+                toast.success('Hồ sơ đã được cập nhật thành công!');
+                // Bạn có thể cần cập nhật lại thông tin user trong state sau khi lưu thành công
+                // Nếu backend trả về dữ liệu đã cập nhật, bạn có thể sử dụng response.data để cập nhật lại state
+                // setUser(response.data); 
+            } else {
+                toast.error('Cập nhật hồ sơ thất bại!');
+            }
+        } catch (err) {
+            console.error('Lỗi khi cập nhật hồ sơ:', err);
+            if (err.response) {
+                toast.error(`Lỗi cập nhật: ${err.response.data?.message || err.response.statusText}`);
+            } else {
+                toast.error('Đã xảy ra lỗi mạng hoặc lỗi không xác định!');
+            }
+        }
     };
 
+    // Hiển thị trạng thái tải hoặc lỗi
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p>Đang tải thông tin hồ sơ...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-screen text-red-500">
+                <p>Không thể tải hồ sơ: {error.message}. Vui lòng thử lại sau.</p>
+            </div>
+        );
+    }
+
+    // Nếu không có lỗi và user đã được tải
     return (
         <div className="max-w-xl mx-auto bg-white rounded shadow p-8 mt-10 mb-10">
             <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">User Profile</h2>
@@ -55,7 +121,7 @@ function UserProfilePage() {
                     value={user.fullName}
                     onChange={handleChange}
                     disabled={!editMode}
-                    className="p-2 border rounded bg-gray-100"
+                    className="p-2 border rounded bg-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
 
                 <label className="font-semibold">Phone Number</label>
@@ -64,8 +130,8 @@ function UserProfilePage() {
                     name="phoneNumber"
                     value={user.phoneNumber}
                     onChange={handleChange}
-                    disabled
-                    className="p-2 border rounded bg-gray-100"
+                    disabled // Số điện thoại thường không cho phép chỉnh sửa
+                    className="p-2 border rounded bg-gray-200 cursor-not-allowed" // Thêm kiểu dáng disabled
                 />
 
                 <label className="font-semibold">Address</label>
@@ -75,17 +141,17 @@ function UserProfilePage() {
                     value={user.address}
                     onChange={handleChange}
                     disabled={!editMode}
-                    className="p-2 border rounded bg-gray-100"
+                    className="p-2 border rounded bg-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
 
                 <label className="font-semibold">Date of Birth</label>
                 <input
-                    type="date"
+                    type="date" // Sử dụng type="date" cho input ngày sinh
                     name="dateOfBirth"
                     value={user.dateOfBirth}
                     onChange={handleChange}
                     disabled={!editMode}
-                    className="p-2 border rounded bg-gray-100"
+                    className="p-2 border rounded bg-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
 
                 <label className="font-semibold">Gender</label>
@@ -94,7 +160,7 @@ function UserProfilePage() {
                     value={user.gender}
                     onChange={handleChange}
                     disabled={!editMode}
-                    className="p-2 border rounded bg-gray-100"
+                    className="p-2 border rounded bg-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 >
                     <option value="">Select</option>
                     <option value="MALE">Male</option>
@@ -107,13 +173,13 @@ function UserProfilePage() {
                         <>
                             <button
                                 onClick={handleSave}
-                                className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
+                                className="bg-blue-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-200"
                             >
                                 Save
                             </button>
                             <button
                                 onClick={() => setEditMode(false)}
-                                className="border border-gray-400 px-6 py-2 rounded font-semibold hover:bg-gray-100"
+                                className="border border-gray-400 text-gray-700 px-6 py-2 rounded-md font-semibold hover:bg-gray-100 transition-colors duration-200"
                             >
                                 Cancel
                             </button>
@@ -121,7 +187,7 @@ function UserProfilePage() {
                     ) : (
                         <button
                             onClick={() => setEditMode(true)}
-                            className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
+                            className="bg-blue-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-200"
                         >
                             Edit Profile
                         </button>
@@ -129,7 +195,7 @@ function UserProfilePage() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default UserProfilePage
+export default UserProfilePage;

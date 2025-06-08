@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/profile")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ProfileController {
 
     private final UserService userService;
@@ -23,9 +22,15 @@ public class ProfileController {
     }
 
     // PUT: Cập nhật thông tin hồ sơ
-    @PutMapping
-    public ResponseEntity<String> updateProfile(@RequestBody ProfileDTO profileDTO) {
+//    @PutMapping
+//    public ResponseEntity<String> updateProfile(@RequestBody ProfileDTO profileDTO) {
+//        userService.updateProfile(profileDTO);
+//        return ResponseEntity.ok("Cập nhật hồ sơ thành công");
+//    }
+    @PatchMapping
+    public ResponseEntity<?> updateProfile(@RequestBody ProfileDTO profileDTO) {
         userService.updateProfile(profileDTO);
         return ResponseEntity.ok("Cập nhật hồ sơ thành công");
     }
+
 }
