@@ -2,18 +2,20 @@ package com.example.druguseprevention.dto;
 
 import com.example.druguseprevention.enums.Gender;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 
 @Data
 public class RegisterRequest {
-    String userName;
-    String password;
-    String email;
-    String fullName;
-    String phoneNumber;
-    String address;
-    LocalDate dateOfBirth;
-    Gender gender;
-
+    private String username; // ✅ sửa tên biến cho đúng
+    private String password;
+    private String email;
+    private String fullName;
+    private String phoneNumber;
+    private String address;
+    private LocalDate dateOfBirth;
+    private Gender gender;
 }
+
+

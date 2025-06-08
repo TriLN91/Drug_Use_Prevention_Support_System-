@@ -2,11 +2,11 @@
   "Users": [
     {
       "id": "1",
-      "username": "1",
+      "username": "admin",
       "password": "1",
       "email": "admin@fptdaigaku.org",
-      "full_name": "Admin User",
-      "phonenumber": "08989",
+      "full_name": "Admin Drug",
+      "phonenumber": "0987654321",
       "address": "123 Main St",
       "date_of_birth": "2000-01-01",
       "gender": "M",
@@ -58,6 +58,54 @@
       "date_of_birth": "1997-04-20",
       "gender": "M",
       "password": "jack5m",
+      "role_id": "4"
+    },
+    {
+      "id": "7655",
+      "full_name": "Lê Anh Hòa",
+      "username": "hoale",
+      "email": "hoangndse181655@fpt.edu.vn",
+      "phonenumber": "91223444",
+      "address": "Quảng Ngãi",
+      "date_of_birth": "2004-03-01",
+      "gender": "M",
+      "role_id": "3",
+      "password": "123456"
+    },
+    {
+      "id": "7656",
+      "full_name": "Võ Thanh Bình",
+      "username": "binhvt",
+      "email": "binhvtse181793@fpt.edu.vn",
+      "phonenumber": "0383927687",
+      "address": "Bình Định",
+      "date_of_birth": "2004-04-06",
+      "gender": "M",
+      "role_id": "5",
+      "password": "1"
+    },
+    {
+      "id": "c240",
+      "full_name": "Ngọc Nhàn",
+      "username": "nhannn",
+      "email": "nhannn@gmail.com",
+      "phonenumber": "034590281",
+      "address": "Bình Định",
+      "date_of_birth": "2001-01-01",
+      "gender": "M",
+      "password": "123456",
+      "role_id": 2
+    },
+    {
+      "id": "85ee",
+      "full_name": "Demo User3",
+      "username": "user3",
+      "email": "user3@gmail.com",
+      "phonenumber": "0987654321",
+      "address": "456 Second St",
+      "date_of_birth": "2002-01-01",
+      "gender": "F",
+      "password": "123456",
       "role_id": 2
     }
   ],
@@ -81,10 +129,6 @@
     {
       "id": "5",
       "name": "Manager"
-    },
-    {
-      "id": "6",
-      "name": "Guest"
     }
   ],
   "Courses": [
@@ -94,7 +138,7 @@
       "description": "Learn the real facts about drugs, their effects, and how to make informed choices.",
       "start_date": "2024-06-01",
       "end_date": "2024-07-01",
-      "target_age_group": "Teenagers, Adults",
+      "target_age_group": "All Ages",
       "type": "Online",
       "video_link": "https://www.youtube.com/watch?v=pwy3_wFMATU"
     },
@@ -113,7 +157,7 @@
       "description": "Equip parents with knowledge and tools to protect their children from substance abuse.",
       "start_date": "2024-08-15",
       "end_date": "2024-09-15",
-      "target_age_group": "Parents",
+      "target_age_group": "Adults",
       "type": "Seminar"
     },
     {
@@ -133,6 +177,17 @@
       "end_date": "2024-10-20",
       "target_age_group": "All Ages",
       "type": "Community"
+    },
+    {
+      "id": "6",
+      "name": "Test Drug",
+      "description": "Nghiện Vcl",
+      "start_date": "2025-01-07",
+      "end_date": "2025-01-08",
+      "type": "Workshop",
+      "target_age_group": "Teenagers",
+      "video_link": "",
+      "status": "approved"
     }
   ],
   "CourseQuiz": [

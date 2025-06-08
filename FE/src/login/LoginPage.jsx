@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/features/userSlide';
+import 'react-toastify/dist/ReactToastify.css';
 
 function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
         try {
             const res = await fetch('http://localhost:5000/Users' + (username ? `?username=${username}` : ''));
             const data = await res.json();
@@ -18,28 +21,30 @@ function LoginPage() {
                 (u) => u.username === username && u.password === password
             );
             if (found) {
-                // Lưu user vào localStorage
+                dispatch(login(found)); // Sử dụng action 'login'
                 localStorage.setItem('user', JSON.stringify(found));
                 localStorage.setItem('full_name', found.full_name);
-                localStorage.setItem('id', found.id); // Lấy từ dữ liệu trả về
-                // Kiểm tra role
-                if (found.role_id === 1 || found.role === 'Admin') {
-                    navigate('/admin');
-                } else {
-                    navigate('/');
-                }
-
+                localStorage.setItem('id', found.id);
+                toast.success('Login successful!');
+                setTimeout(() => {
+                    if (String(found.role_id) === "1" || found.role === 'Admin') {
+                        navigate('/admin');
+                    } else {
+                        navigate('/');
+                    }
+                }, 500);
             } else {
-                setError('Invalid username or password');
+                toast.error('Invalid username or password');
             }
         } catch (err) {
             console.error('Error fetching data:', err);
-            setError('An error occurred while logging in');
+            toast.error('An error occurred while logging in');
         }
     };
 
     return (
         <div className="flex min-h-screen bg-white items-center justify-center">
+            <ToastContainer autoClose={500} />
             <div className="flex-1 flex flex-col items-center justify-center">
                 {/* Logo */}
                 <img
@@ -70,7 +75,6 @@ function LoginPage() {
                             onChange={e => setPassword(e.target.value)}
                         />
                     </div>
-                    {error && <div className="text-red-500 mb-2 text-sm">{error}</div>}
                     <button type="submit" className="w-full bg-blue-500 text-white rounded-lg py-3 font-semibold text-base mb-3 shadow-md hover:bg-blue-700 transition">
                         Sign in
                     </button>
