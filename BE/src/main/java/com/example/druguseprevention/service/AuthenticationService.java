@@ -39,9 +39,6 @@ public class AuthenticationService implements UserDetailsService {
     @Autowired
     EmailService emailService;
 
-    @Autowired
-    EmailService emailService;
-
     public User register (RegisterRequest registerRequest){
         User user = new User();
         user.setUsername(registerRequest.getUsername());
