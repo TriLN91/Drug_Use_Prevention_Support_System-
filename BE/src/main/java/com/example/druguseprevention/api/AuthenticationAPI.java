@@ -33,4 +33,6 @@ public class AuthenticationAPI {
         UserResponse userResponse = authenticationService.login(loginRequest);
         return ResponseEntity.ok(userResponse);
     }
+
+
 }
