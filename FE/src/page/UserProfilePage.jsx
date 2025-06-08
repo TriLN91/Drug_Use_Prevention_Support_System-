@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { login } from '../redux/features/userSlide';
+import { setUser } from '../redux/features/userSlide';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,6 +25,7 @@ function UserProfilePage() {
     const [confirmPassword, setConfirmPassword] = useState('');
 
     useEffect(() => {
+        // Prefer Redux user, fallback to localStorage
         let currentUser = reduxUser;
         if (!currentUser) {
             try {
@@ -55,7 +56,7 @@ function UserProfilePage() {
                 body: JSON.stringify(user)
             });
             if (res.ok) {
-                dispatch(login(user));
+                dispatch(setUser(user));
                 localStorage.setItem('user', JSON.stringify(user));
                 setEditMode(false);
                 toast.success('Profile updated successfully!');
@@ -89,7 +90,7 @@ function UserProfilePage() {
             });
             if (res.ok) {
                 setUserState(updatedUser);
-                dispatch(login(updatedUser));
+                dispatch(setUser(updatedUser));
                 localStorage.setItem('user', JSON.stringify(updatedUser));
                 setNewPassword('');
                 setConfirmPassword('');
@@ -103,26 +104,8 @@ function UserProfilePage() {
     };
 
     return (
-        <div className="relative max-w-xl mx-auto bg-white rounded shadow p-8 mt-10 mb-10">
+        <div className="max-w-xl mx-auto bg-white rounded shadow p-8 mt-10 mb-10">
             <ToastContainer autoClose={1200} />
-            {/* Nút mũi tên back ở góc trái trên */}
-            <button
-                onClick={() => {
-                    // Nếu đang ở /admin/profile thì back về /admin, ngược lại về /
-                    if (window.location.pathname.startsWith('/admin')) {
-                        navigate('/admin');
-                    } else {
-                        navigate('/');
-                    }
-                }}
-                className="absolute top-4 left-4 bg-gray-200 hover:bg-gray-300 rounded-full p-2 transition"
-                type="button"
-                title="Back"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
             <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">User Profile</h2>
             <div className="flex flex-col gap-4">
                 <label className="font-semibold">Full Name</label>
@@ -248,6 +231,16 @@ function UserProfilePage() {
                             Edit Profile
                         </button>
                     )}
+                </div>
+                {/* Back to Home button */}
+                <div className="flex justify-center mt-4">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="bg-gray-200 text-gray-800 px-6 py-2 rounded font-semibold hover:bg-gray-300 transition"
+                        type="button"
+                    >
+                        Back to Home
+                    </button>
                 </div>
             </div>
         </div>
