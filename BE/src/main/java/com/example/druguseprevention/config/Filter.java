@@ -1,6 +1,6 @@
 package com.example.druguseprevention.config;
 
-import com.example.druguseprevention.exception.AuthenticationException; // Đảm bảo đây là exception tùy chỉnh của bạn
+import com.example.druguseprevention.exception.AuthenticationException;
 import com.example.druguseprevention.service.AuthenticationService;
 import com.example.druguseprevention.service.TokenService;
 import com.example.druguseprevention.entity.User; // Import lớp User
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails; // Import UserDetails
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -30,45 +30,47 @@ public class Filter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final HandlerExceptionResolver resolver;
     private final AuthenticationService authenticationService;
+    private final AntPathMatcher antPathMatcher; // Thêm AntPathMatcher để dùng lại
 
     // Danh sách các API công khai (không cần xác thực)
     // Cấu trúc: "PHUONG_THUC:/duong/dan/api"
     private final List<String> PUBLIC_API = List.of(
             "POST:/api/register",
-            "POST:/api/login"
-            // Thêm các API GET công khai khác tại đây nếu có, ví dụ:
-            // "GET:/api/products",
-            // "GET:/api/categories/*"
+            "POST:/api/login",
+            // THÊM CÁC API GET CÔNG KHAI KHÁC CỦA BẠN TẠI ĐÂY NẾU CÓ.
+            // VÍ DỤ: "GET:/api/products", "GET:/api/categories/*"
+            // ĐỪNG BAO GỒM "GET:/**" VÌ ĐÓ LÀ LỖ HỔNG BẢO MẬT
+            "GET:/api/swagger-ui/**", // Cho phép truy cập Swagger UI
+            "GET:/v3/api-docs/**"    // Cho phép truy cập OpenAPI docs
+            // ĐÃ LOẠI BỎ "GET:/api/profile" và "PATCH:/api/profile" KHỎI PUBLIC_API.
+            // CHÚNG SẼ YÊU CẦU XÁC THỰC VÀ PHẢI ĐƯỢC CẤP QUYỀN TRONG SecurityConfig.java.
     );
 
-    @Autowired // Sử dụng constructor injection, là cách được khuyến nghị bởi Spring
+    @Autowired
     public Filter(TokenService tokenService,
                   HandlerExceptionResolver handlerExceptionResolver,
                   AuthenticationService authenticationService) {
         this.tokenService = tokenService;
         this.resolver = handlerExceptionResolver;
         this.authenticationService = authenticationService;
+        this.antPathMatcher = new AntPathMatcher(); // Khởi tạo AntPathMatcher
     }
 
     /**
      * Kiểm tra xem một URI và phương thức có phải là API công khai không.
-     * Sử dụng AntPathMatcher để hỗ trợ wildcard.
      * @param uri URI của request (ví dụ: /api/register)
      * @param method Phương thức HTTP của request (ví dụ: POST, GET)
      * @return true nếu là API công khai, false nếu không.
      */
     public boolean isPublicAPI(String uri, String method) {
-        AntPathMatcher matcher = new AntPathMatcher();
-
-        // Kiểm tra xem request có khớp với bất kỳ pattern nào trong PUBLIC_API không
         return PUBLIC_API.stream().anyMatch(pattern -> {
             String[] parts = pattern.split(":", 2);
-            if (parts.length != 2) return false; // Định dạng pattern không đúng
+            if (parts.length != 2) return false;
 
             String allowedMethod = parts[0];
             String allowedUri = parts[1];
 
-            return method.equalsIgnoreCase(allowedMethod) && matcher.match(allowedUri, uri);
+            return method.equalsIgnoreCase(allowedMethod) && antPathMatcher.match(allowedUri, uri);
         });
     }
 
@@ -90,20 +92,18 @@ public class Filter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         String method = request.getMethod();
 
-        // QUAN TRỌNG: Xử lý riêng biệt cho yêu cầu OPTIONS (preflight request).
-        // Yêu cầu OPTIONS không chứa Authorization header và phải được cho phép đi qua
-        // để trình duyệt có thể gửi yêu cầu thực tế.
+        // 1. Xử lý yêu cầu OPTIONS (preflight requests) ĐẦU TIÊN
         if (HttpMethod.OPTIONS.matches(method)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Kiểm tra xem có phải là API công khai không
+        // 2. Kiểm tra xem có phải là API công khai không
         if (isPublicAPI(uri, method)) {
             filterChain.doFilter(request, response);
             return;
         } else {
-            // Đây là API cần xác thực, tiến hành kiểm tra token
+            // 3. Đây là API cần xác thực, tiến hành kiểm tra token
             String token = getToken(request);
 
             // Nếu không có token
@@ -112,10 +112,10 @@ public class Filter extends OncePerRequestFilter {
                 return;
             }
 
-            // Có token, tiến hành xác thực token
+            // 4. Có token, tiến hành xác thực token
             User userFromToken;
             try {
-                // Từ token tìm ra đối tượng User (TokenService.extractAccount trả về User)
+                // Từ token tìm ra đối tượng User (tokenService.extractAccount trả về User)
                 userFromToken = tokenService.extractAccount(token);
             } catch (ExpiredJwtException expiredJwtException) {
                 // Token hết hạn
@@ -126,29 +126,42 @@ public class Filter extends OncePerRequestFilter {
                 resolver.resolveException(request, response, null, new AuthenticationException("Invalid Token!"));
                 return;
             } catch (IllegalArgumentException illegalArgumentException) {
-                // Token null hoặc trống khi parse
-                resolver.resolveException(request, response, null, new AuthenticationException("Token is null or empty in payload!"));
+                // Token null hoặc trống khi parse (lỗi này hiếm xảy ra nếu getToken() đã kiểm tra)
+                resolver.resolveException(request, response, null, new AuthenticationException("Token content is null or empty!"));
                 return;
             } catch (Exception e) {
                 // Bắt các lỗi chung khác khi trích xuất tài khoản từ token
-                resolver.resolveException(request, response, null, new AuthenticationException("Error extracting account from token: " + e.getMessage()));
+                // Điều này có thể xảy ra nếu TokenService.extractAccount có lỗi khác
+                resolver.resolveException(request, response, null, new AuthenticationException("Error processing token: " + e.getMessage()));
                 return;
             }
 
-            // Nếu userFromToken là null (ví dụ: không tìm thấy người dùng từ username trong token)
-            if (userFromToken == null) {
-                resolver.resolveException(request, response, null, new AuthenticationException("User from token not found in database!"));
+            // 5. Nếu userFromToken là null (ví dụ: không tìm thấy người dùng từ username trong token payload)
+            if (userFromToken == null || userFromToken.getUsername() == null) {
+                resolver.resolveException(request, response, null, new AuthenticationException("User from token not found or invalid username!"));
                 return;
             }
 
-            // Nếu token hợp lệ và có người dùng, tải UserDetails đầy đủ và đặt vào SecurityContext
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                // TẢI THÔNG TIN NGƯỜI DÙNG ĐẦY ĐỦ BAO GỒM QUYỀN HẠN TỪ UserDetailsService
-                UserDetails userDetails = authenticationService.loadUserByUsername(userFromToken.getUsername());
+            // 6. Nếu token hợp lệ và có người dùng, tải UserDetails đầy đủ và đặt vào SecurityContext
+            // Chỉ đặt Authentication nếu SecurityContextHolder chưa có (tránh ghi đè hoặc đặt lại)
+            if (SecurityContextHolder.getContext().getAuthentication() == null || !(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof UserDetails)) {
 
-                // Nếu userDetails là null (người dùng không tồn tại trong DB dù token hợp lệ)
-                if (userDetails == null) {
+                UserDetails userDetails = null;
+                try {
+                    // TẢI THÔNG TIN NGƯỜI DÙNG ĐẦY ĐỦ BAO GỒM QUYỀN HẠN TỪ UserDetailsService
+                    // Sử dụng username từ đối tượng userFromToken để tải UserDetails
+                    userDetails = authenticationService.loadUserByUsername(userFromToken.getUsername());
+                } catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+                    // Người dùng không tồn tại trong DB dù token có username
                     resolver.resolveException(request, response, null, new AuthenticationException("User not found via UserDetailsService!"));
+                    return;
+                } catch (Exception e) {
+                    resolver.resolveException(request, response, null, new AuthenticationException("Error loading user details: " + e.getMessage()));
+                    return;
+                }
+
+                if (userDetails == null) {
+                    resolver.resolveException(request, response, null, new AuthenticationException("User details could not be loaded!"));
                     return;
                 }
 
@@ -162,7 +175,7 @@ public class Filter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
-            // Token OK, cho phép request tiếp tục vào Controller
+            // 7. Token OK, cho phép request tiếp tục vào Controller
             filterChain.doFilter(request, response);
         }
     }
