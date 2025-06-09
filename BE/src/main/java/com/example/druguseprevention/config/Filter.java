@@ -27,12 +27,24 @@ import java.util.List;
 @Component
 public class Filter extends OncePerRequestFilter {
 
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
+
+
     private final TokenService tokenService;
     private final HandlerExceptionResolver resolver;
     private final AuthenticationService authenticationService;
 
+
+
+    // phần này dùng để public các method api
+
+
     // Danh sách các API công khai (không cần xác thực)
     // Cấu trúc: "PHUONG_THUC:/duong/dan/api"
+
     private final List<String> PUBLIC_API = List.of(
             "POST:/api/register",
             "POST:/api/login"

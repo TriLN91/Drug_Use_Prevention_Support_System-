@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 public class RegisterRequest {
-    private String username; // ✅ sửa tên biến cho đúng
+    private String userName; // ✅ sửa tên biến cho đúng
     private String password;
     private String email;
     private String fullName;

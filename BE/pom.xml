@@ -78,6 +78,10 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>3.5.0</version>
 		</dependency>
+
+
+
+
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
