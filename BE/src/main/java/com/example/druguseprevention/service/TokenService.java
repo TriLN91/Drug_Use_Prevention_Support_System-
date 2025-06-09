@@ -27,24 +27,29 @@ public class TokenService {
     }
 
     public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getUsername()) // dùng setSubject thay vì subject()
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 1 ngày
-                .signWith(getSigninKey(), io.jsonwebtoken.SignatureAlgorithm.HS256)
-                .compact();
+        String token =
+                // create object of JWT
+                Jwts.builder().
+                        //subject of token
+                                subject(user.getUsername()).
+                        // time Create Token
+                                issuedAt(new Date(System.currentTimeMillis()))
+                        // Time exprire of Token
+                        .expiration(new Date(System.currentTimeMillis()+24*60*60*1000))
+                        //
+                        .signWith(getSigninKey())
+                        .compact();
+        return token;
     }
-
 
     // form token to Claim Object
     public Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigninKey())
+        return  Jwts.parser().
+                verifyWith(getSigninKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
-
 
     // get userName form CLAIM
     public User extractAccount (String token){
