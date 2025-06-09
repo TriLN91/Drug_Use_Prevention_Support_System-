@@ -41,7 +41,7 @@ public class AuthenticationService implements UserDetailsService {
 
     public User register (RegisterRequest registerRequest){
         User user = new User();
-        user.setUsername(registerRequest.getUsername());
+        user.setUserName(registerRequest.getUserName());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setEmail(registerRequest.getEmail());
         user.setFullName(registerRequest.getFullName());
@@ -62,14 +62,14 @@ public class AuthenticationService implements UserDetailsService {
     public UserResponse login (LoginRequest loginRequest){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(),
+                    loginRequest.getUserName(),
                     loginRequest.getPassword()
             ));
 
         }catch (Exception e){
             throw new AuthenticationException("Username or Password not valid!");
         }
-        User user = authenticationRepository.findUserByUsername(loginRequest.getUsername());
+        User user = authenticationRepository.findUserByUserName(loginRequest.getUserName());
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
         String token = tokenService.generateToken(user);
         userResponse.setToken(token);
@@ -77,7 +77,7 @@ public class AuthenticationService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return authenticationRepository.findUserByUsername(username);
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        return authenticationRepository.findUserByUserName(userName);
     }
 }

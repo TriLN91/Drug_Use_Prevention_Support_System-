@@ -4,5 +4,5 @@ import com.example.druguseprevention.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AuthenticationRepository extends JpaRepository<User, Long> {
-    User findUserByUsername (String username);
+    User findUserByUserName (String userName);
 }
