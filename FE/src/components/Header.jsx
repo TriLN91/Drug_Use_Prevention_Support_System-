@@ -1,23 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../redux/features/userSlide';
 
 function Header() {
-  const reduxUser = useSelector(state => state.user.user);
-  const full_name = reduxUser?.full_name || localStorage.getItem('full_name');
+  const full_name = localStorage.getItem('full_name');
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [openMenu, setOpenMenu] = useState(false);
   const menuRef = useRef();
 
   const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem('user');
     localStorage.removeItem('full_name');
-    localStorage.removeItem('id');
-    setOpenMenu(false);
-    navigate('/login');
+    navigate('/');
+    window.location.reload();
   };
 
   // Close dropdown when click outside
